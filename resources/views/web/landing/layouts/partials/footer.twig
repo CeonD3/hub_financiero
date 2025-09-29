@@ -1,0 +1,162 @@
+    <!--begin::Footer Section-->
+    <div class="mb-0">
+        <!--begin::Wrapper-->
+        <div class="bs-landing-footer pt-20">
+            <!--begin::Container-->
+            <div class="container">
+                <!--begin::Row-->
+                <div class="row py-10 py-lg-20">
+                    <!--begin::Col-->
+                    <div class="col-lg-5 pe-lg-16 mb-5 mb-lg-0">
+                        <!--begin::Block-->
+                        <div class="mb-5">
+                            {# <img src="/assets/media/images/logo-consultoria.png" height="100px"/> #}
+                            <img alt="Logo" src="{{_company.host}}{{_company.logos[2].patch}}" height="100px" />
+                        </div>
+                        <!--begin::Block-->
+                        <div class="mb-10">
+                            <!--begin::Title-->
+                            <h2 class="fw-normal fs-4 opacity-50 text-gray-500 mb-5">Escribenos tu correo abajo para conseguir una actualización diaria</h2>
+                            <!--end::Title-->
+                            <!--begin::Text-->
+                            <form class="formSuscription">
+                                <div class="d-flex">
+                                    <input type="type" name="email" class="form-control me-2" placeholder="Escribe acá su email" required>
+                                    <button type="submit" class="btn btn-secondary">Suscribirse</button>
+                                </div>
+                            </form>
+                            <!--end::Text-->
+                        </div>
+                        <!--end::Block-->
+                    </div>
+                    <!--end::Col-->
+                    <!--begin::Col-->
+                    <div class="col-lg-7 ps-lg-16">
+                        <!--begin::Navs-->
+                        <div class="d-flex justify-content-center row">
+                            <!--begin::Links-->
+                            <div class="col d-flex fw-semibold flex-column">
+                                <!--begin::Subtitle-->
+                                <h4 class="fw-bold opacity-70 text-gray-500 mb-6 fs-6">RECURSOS</h4>
+                                <!--end::Subtitle-->
+                                <!--begin::Link-->
+                                <a href="#contact" class="text-white text-hover-primary fs-5 mb-6">Contacto</a>
+                                <!--end::Link-->
+                                {% if _company.terms_and_conditions %}
+                                <!--begin::Link-->
+                                <a href="/terminos-condiciones" target="_blank" class="text-white text-hover-primary fs-5 mb-6">Terminos y Condiciones</a>
+                                <!--end::Link-->
+                                {% endif %}
+                                {% if _company.privacy_policies %}
+                                <!--begin::Link-->
+                                <a href="/politicas-privacidad" target="_blank" class="text-white text-hover-primary fs-5 mb-6">Políticas de Privacidad</a>
+                                <!--end::Link-->
+                                {% endif %}                                
+                            </div>
+                            <!--end::Links-->
+                            <!--begin::Links-->
+                            <div class="col d-flex fw-semibold flex-column">
+                                <!--begin::Subtitle-->
+                                <h4 class="fw-bold opacity-70 text-gray-500 mb-6 fs-6">PRODUCTOS</h4>
+                                <!--end::Subtitle-->
+                                <!--begin::Link-->
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#kt_product_modal_1" class="text-white text-hover-primary fs-5 mb-6">Reporte de datos</a>
+                                <!--end::Link-->
+                                <!--begin::Link-->
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#kt_product_modal_2" class="text-white text-hover-primary fs-5 mb-6">Reporte detallado</a>
+                                <!--end::Link-->
+                                <!--begin::Link-->
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#kt_product_modal_3" class="text-white text-hover-primary fs-5 mb-6">Reporte especializado</a>
+                                <!--end::Link-->
+                            </div>
+                            <!--end::Links-->
+                            <!--begin::Links-->
+                            <div class="col d-flex fw-semibold flex-column">
+                                <!--begin::Subtitle-->
+                                <h4 class="fw-bold opacity-70 text-gray-500 mb-6 fs-6">EMPRESA</h4>
+                                <!--end::Subtitle-->
+                                <!--begin::Link-->
+                                <a href="#team" class="mb-6">
+                                    <span class="text-white text-hover-primary fs-5 mb-6">Equipo</span>
+                                </a>
+                                <!--end::Link-->
+                                {% if _company.phone_contact %}
+                                <!--begin::Link-->
+                                <a href="#" class="mb-6">
+                                    <span class="text-white text-hover-primary fs-5 mb-6">{{ _company.phone_contact }}</span>
+                                </a>
+                                <!--end::Link-->
+                                {% endif %}
+                                {% if _company.email_contact %}
+                                <!--begin::Link-->
+                                <a href="#" class="mb-6">
+                                    <span class="text-white text-hover-primary fs-5 mb-6">{{ _company.email_contact }}</span>
+                                </a>
+                                <!--end::Link-->
+                                {% endif %}
+                            </div>
+                            <!--end::Links-->
+                        </div>
+                        <!--end::Navs-->
+                    </div>
+                    <!--end::Col-->
+                </div>
+                <!--end::Row-->
+            </div>
+            <!--end::Container-->
+            <!--begin::Separator-->
+            <div class="container">
+                <div class="landing-dark-separator bg-white border-top border-primary"></div>
+            </div>
+            <!--end::Separator-->
+            <!--begin::Container-->
+            <div class="container">
+                <!--begin::Wrapper-->
+                <div class="d-flex flex-column flex-md-row flex-stack py-7 py-lg-10">
+                    <!--begin::Copyright-->
+                    <div class="d-flex align-items-center order-2 order-md-1">
+                        <!--begin::Logo image-->
+                        <span class="mx-5 fs-6 fw-semibold text-gray-600 pt-1" href="https://keenthemes.com">&copy; {{"now"|date("Y")}} {{_company.name}}. Todos los derechos reservados.</span>
+                        <!--end::Logo image-->
+                    </div>
+                    <!--end::Copyright-->
+                    <!--begin::Menu-->
+                    <ul class="menu menu-gray-600 menu-hover-primary fw-semibold fs-6 fs-md-5 order-1 mb-5 mb-md-0">
+
+                        {% if _company.facebook_link %}
+                        <li class="menu-item ms-2"><a href="{{ _company.facebook_link }}" target="_blank"><i class="fab fa-facebook"></i></a></li>                                
+                        {% endif %}
+                        {% if _company.twitter_link %}
+                        <li class="menu-item ms-2"><a href="{{ _company.twitter_link }}" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                        {% endif %}
+                        {% if _company.linkedin_link %}
+                        <li class="menu-item ms-2"><a href="{{ _company.linkedin_link }}" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+                        {% endif %}
+                        {% if _company.instagram_link %}
+                        <li class="menu-item ms-2"><a href="{{ _company.instagram_link }}" target="_blank"><i class="fab fa-instagram"></i></a></li>                                
+                        {% endif %}
+                        {% if _company.whatsapp_link %}
+                        <li class="menu-item ms-2"><a href="{{ _company.whatsapp_link }}" target="_blank"><i class="fab fa-whatsapp"></i></a></li>                                
+                        {% endif %}
+                    </ul>
+                    <!--end::Menu-->
+                </div>
+                <!--end::Wrapper-->
+            </div>
+            <!--end::Container-->
+        </div>
+        <!--end::Wrapper-->
+    </div>
+    <!--end::Footer Section-->
+    <!--begin::Scrolltop-->
+    <div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
+        <!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
+        <span class="svg-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="currentColor" />
+                <path d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z" fill="currentColor" />
+            </svg>
+        </span>
+        <!--end::Svg Icon-->
+    </div>
+    <!--end::Scrolltop-->

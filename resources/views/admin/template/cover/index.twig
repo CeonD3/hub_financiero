@@ -1,0 +1,164 @@
+{% extends "admin/layouts/main.twig" %}
+
+{% block style %}
+<style>
+
+
+.portada-container {
+    /* AJUSTA ESTAS DIMENSIONES A LAS DE TU IMAGEN ORIGINAL */
+    width: 800px;
+    height: 1130px;
+    position: relative;
+    /* La imagen de fondo se aplicará aquí vía JS y contendrá las formas de color */
+    background-color: #ffffff; /* Color base si no hay imagen de fondo */
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+</style>
+<style>
+    .container-cover-view {
+        justify-content: center;
+        display: flex;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column">
+    <!--begin::Toolbar-->
+    <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+        <!--begin::Toolbar container-->
+        <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
+            <!--begin::Page title-->
+            <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                <!--begin::Title-->
+                <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Edición de portada</h1>
+                <!--end::Title-->
+                <!--begin::Breadcrumb-->
+                <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-muted">
+                        <a href="/admin" class="text-muted text-hover-primary">Home</a>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item">
+                        <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-muted">Portadas</li>
+                    <!--end::Item-->
+                </ul>
+                <!--end::Breadcrumb-->
+            </div>
+            <!--end::Page title-->
+            <!--begin::Actions-->
+            <div class="d-flex align-items-center gap-2 gap-lg-3">
+                <!--begin::Primary button-->
+                <!--end::Primary button-->
+            </div>
+            <!--end::Actions-->
+        </div>
+        <!--end::Toolbar container-->
+    </div>
+    <!--end::Toolbar-->
+    <!--begin::Content-->
+    <div id="kt_app_content" class="app-content flex-column-fluid">
+
+        <div id="AppAdminTemplate" class="app-container container-fluid">
+            <div class="row gx-5 gx-xl-10">
+                <!--begin::Col-->
+                <div class="col-sm-12 col-xl-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <h2 class="fw-bolder mb-2">Portadas</h2>
+                            </div>
+                            <div class="card-toolbar">
+                                <!--begin::Button-->
+                                <a href="/admin/master/portadas/create" class="btn btn-primary">
+                                    <span class="indicator-label">Nuevo</span>
+                                </a>
+                                <!--end::Button-->
+                            </div>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="row">
+                                {% for item in data.covers %}
+                                    <div class="col-lg-3 col-md-6 mb-5" data-search="{{item.name}}">
+                                        <div class="card border-secondary border">
+                                            <div class="card-header p-3">
+                                                <h6 class="card-title">{{item.name}}</h6>
+                                                <div class="card-toolbar">
+                                                    <a href="/admin/master/portadas/{{ item.id }}/edit" class="btn btn-sm btn-link">
+                                                        <i class="fa fa-edit p-0 text-primary fs-3 ms-4" aria-hidden="true"></i>
+                                                    </a>
+                                                    <button class="btn btn-sm btn-link btn-trash p-0 ms-4" data-id="{{item.id}}">
+                                                        <i class="fa fa-trash p-0 text-danger fs-3" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body p-0">
+                                                <img class="card-img" src="{{APP.API_URL_FINANCE}}{{item.file}}" alt="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-lg-12 col-md-12">
+                                        No hay portadas disponibles para mostrar.
+                                    </div>
+                                {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Obtén todos los botones de borrado
+        const trashButtons = document.querySelectorAll('.btn-trash');
+        console.log(trashButtons);
+        trashButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault(); // Evita el comportamiento predeterminado del enlace
+                const id = button.getAttribute('data-id');
+                sweet2.question({
+                    title: `¿Estás seguro de que quieres eliminar este registro?`,
+                    onOk: () => {
+                        sweet2.loading();
+                        // Realiza la solicitud AJAX para borrar el registro
+                        helper.post(`{{APP.API_URL_FINANCE}}/api/admin/master/covers/${id}/remove`)
+                        .then(({success, data, message}) => {
+                            if (!success) {
+                                throw new Error(message);
+                            }
+                            sweet2.success({title: message});
+                            setTimeout(() => {
+                                sweet2.loading();
+                                window.location.reload();
+                            }, 2000);
+                        })
+                        .catch(error => {
+                            sweet2.error({html: error});
+                            // Maneja el error de conexión
+                            console.error('Error de conexión:', error);
+
+                        });
+                    }
+                });
+            });
+        });     
+    });
+</script>
+{% endblock %}

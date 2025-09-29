@@ -1,0 +1,295 @@
+{% extends "web/home/kapital/layouts/main.twig" %}
+
+{% block style %}
+    <style>
+        .border-dolares {
+            border: 1px solid #fd7e14;
+        }
+        .border-soles {
+            border: 1px solid #50cd89;
+        }
+    </style>
+{% endblock %}
+
+{% block navbar %}
+    {% include "web/home/kapital/layouts/partials/navbar.twig" with { 'selected': 'result' } %}
+{% endblock %}
+
+{% block content %}
+<!--begin::Container-->
+<div class="container-xxl" id="AppResultKapitalWeb" uid="{{ data.uid }}">
+    <!--begin::Row-->
+    <div class="row gy-5 g-xl-8">
+        <div class="col-lg-12">             
+            <div class="bs-container-title">
+                <div class="row">
+                    <div class="col-lg-8 mb-2">
+                        <h1 class="fs-1" v-text="title">Resultados generales</h1>
+                        <span class="fs-5">Comparación de resultados</span>
+                    </div>
+                    {#<div class="col-lg-4 mb-2">
+                        <div v-if="typeId == 2" class="inline-block float-end">
+                            <select class="form-select" v-model="currency" @change="onCurrency">
+                                <option value="pen" selected>PEN</option>
+                                <option value="usd">USD</option>
+                            </select>
+                        </div>
+                    </div>#}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 table-loading mt-3" v-show="loading">
+            <div class="table-loading-message" v-if="loading">
+                Cargando...
+            </div>
+        </div>
+        <div class="m-0" style="display:none;" v-show="!loading">
+            <div class="col-lg-12 mt-3" v-if="typeId == 1">
+                <div class="card bs-panel-3 shadow-sm">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-8 border-end border-bottom border-secondary">
+                                <div class="panel-side">
+                                    <h3 class="mb-7">Resultados del mercado emergente</h3>
+                                    <div class="mb-2" id="bsGroup1" style="height:250px;width:300px;margin: auto;"></div>
+                                </div>                                   
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="row">
+                                    <div class="col-lg-12 border-bottom border-secondary">
+                                        <div class="panel-header">
+                                            <h2 v-text="formatterx100p(emergent.cppc)"></h2>
+                                            <span class="lh-1">Costo promedio de capital (CPPC)</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 border-bottom border-secondary">
+                                        <div class="panel-body">
+                                            <div class="panel-item">
+                                                <div class="panel-icon bs-fa-green">                                                   
+                                                    <i class="fa-solid fa-arrow-trend-up"></i>     
+                                                </div>                                            
+                                                <div class="d-flex justify-content-start flex-column">
+                                                    <strong v-text="formatterx100p(emergent.kd)"></strong>
+                                                    <span class="text-gray-400 fw-semibold d-block fs-7 lh-1">Costo de deuda después de impuestos (Kd*(1-T))</span>
+                                                </div>
+                                            </div>
+                                            <div class="panel-item">
+                                                <div class="panel-icon bs-fa-blue">                                                   
+                                                    <i class="fa-regular fa-user"></i>                                                 
+                                                </div>                                            
+                                                <div class="d-flex justify-content-start flex-column">
+                                                    <strong v-text="formatterx100p(emergent.ke)"></strong>
+                                                    <span class="text-gray-400 fw-semibold d-block fs-7 lh-1">Costo de capital financiero (Ke)</span>
+                                                </div>
+                                            </div>
+                                            <div class="panel-item">
+                                                <div class="panel-icon bs-fa-light">                                                   
+                                                    <i class="fa-solid fa-laptop"></i>                                                 
+                                                </div>                                            
+                                                <div class="d-flex justify-content-start flex-column">
+                                                    <strong v-text="formatterx100p(emergent.koa)"></strong>
+                                                    <span class="text-gray-400 fw-semibold d-block fs-7 lh-1">Costo de cápital económico (Koa)</span>
+                                                </div>                                     
+                                            </div>  
+                                        </div> 
+                                    </div>
+                                </div>                                 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card bs-panel-3 shadow-sm">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-8 border-end border-bottom border-secondary">
+                                <div class="panel-side">
+                                    <h3 class="mb-7">Resultados del mercado desarrollado</h3>
+                                    <div class="mb-2" id="bsGroup2" style="height:250px;width: 300px;margin: auto;"></div>
+                                </div>                                   
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="row">
+                                    <div class="col-lg-12 border-bottom border-secondary">
+                                        <div class="panel-header">
+                                            <h2 v-text="formatterx100p(developed.cppc)"></h2>
+                                            <span class="lh-1">Costo promedio de capital (CPPC)</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 border-bottom border-secondary">
+                                        <div class="panel-body">
+                                            <div class="panel-item">
+                                                <div class="panel-icon bs-fa-green">                                                   
+                                                    <i class="fa-solid fa-arrow-trend-up"></i>     
+                                                </div>                                            
+                                                <div class="d-flex justify-content-start flex-column">
+                                                    <strong v-text="formatterx100p(developed.kd)"></strong>
+                                                    <span class="text-gray-400 fw-semibold d-block fs-7 lh-1">Costo de deuda después de impuestos (Kd*(1-T))</span>
+                                                </div>
+                                            </div>
+                                            <div class="panel-item">
+                                                <div class="panel-icon bs-fa-blue">                                                   
+                                                    <i class="fa-regular fa-user"></i>                                                 
+                                                </div>                                            
+                                                <div class="d-flex justify-content-start flex-column">
+                                                    <strong v-text="formatterx100p(developed.ke)"></strong>
+                                                    <span class="text-gray-400 fw-semibold d-block fs-7 lh-1">Costo de capital financiero (Ke)</span>
+                                                </div>
+                                            </div>
+                                            <div class="panel-item">
+                                                <div class="panel-icon bs-fa-light">                                                   
+                                                    <i class="fa-solid fa-laptop"></i>                                                 
+                                                </div>                                            
+                                                <div class="d-flex justify-content-start flex-column">
+                                                    <strong v-text="formatterx100p(developed.koa)"></strong>
+                                                    <span class="text-gray-400 fw-semibold d-block fs-7 lh-1">Costo de cápital económico (Koa)</span>
+                                                </div>                                     
+                                            </div>  
+                                        </div> 
+                                    </div>
+                                </div>                                 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12 mt-3" v-else>
+                <div class="row">
+                    <div class="col">
+                        <div class="card bs-panel-3" :class="{'border-dolares': currency == 'usd', 'border-soles': currency == 'pen'}">
+                            <div class="card-header">
+                                <h3 class="card-title">Empresa</h3>
+                                <div class="col-lg-4 my-2">
+                                    <div v-if="typeId == 2" class="inline-block float-end">
+                                        <select class="form-select" v-model="currency" @change="onCurrency">
+                                            <option value="pen" selected>PEN</option>
+                                            <option value="usd">USD</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="panel-side">
+                                            <div class="mb-7 px-20">
+                                                <h2 class="fs-1" v-text="formatterx100p(cppc)"></h2>
+                                                <span class="lh-1">CPPC</span>
+                                            </div>
+                                            <div class="mb-5" id="bsGroupCard1" style="height:200px;width:250px;margin: auto;"></div>
+                                        </div>                                   
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card bs-panel-3">
+                            <div class="card-header">
+                                <h3 class="card-title">Mercado emergente</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="panel-side">
+                                            <div class="mb-7 px-20">
+                                                <h2 class="fs-1" v-text="formatterx100p(emergent.cppc)"></h2>
+                                                <span class="lh-1">CPPC</span>
+                                            </div>
+                                            <div class="mb-5" id="bsGroupCard3" style="height:200px;width:250px;margin: auto;"></div>
+                                        </div>                                   
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card bs-panel-3">
+                            <div class="card-header">
+                                <h3 class="card-title">Mercado desarrollado</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="panel-side">
+                                            <div class="mb-7 px-20">
+                                                <h2 class="fs-1" v-text="formatterx100p(developed.cppc)"></h2>
+                                                <span class="lh-1">CPPC</span>
+                                            </div>
+                                            <div class="mb-5" id="bsGroupCard2" style="height:200px;width:250px;margin: auto;"></div>
+                                        </div>                                   
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="card shadow-sm bs-card-a1" style="min-height: 19rem;">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fa-solid fa-file-lines"></i></h3>
+                            </div>
+                            <div class="card-body" style="min-height: 90px;">
+                                <span>Costo Promedio Ponderado de Capital (CPPC)</span><br>
+                                El costo de las fuentes de capital que se utilizaron en financiar los activos de la firma.
+                            </div>
+                            <div class="card-footer">
+                                <h2 v-text="formatterx100p(cppc)"></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm bs-card-a1" style="min-height: 19rem;">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fa-solid fa-pencil"></i></h3>
+                            </div>
+                            <div class="card-body" style="min-height: 90px;">
+                                <span>Costo de Deuda Después de Impuestos (Kd*(1-T))</span><br>
+                                El costo de la deuda de los pasivos financieros que tienen la empresa.
+                            </div>
+                            <div class="card-footer">
+                                <h2 v-text="formatterx100p(kd)"></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm bs-card-a1" style="min-height: 19rem;">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fa-solid fa-chart-column"></i></h3>
+                            </div>
+                            <div class="card-body" style="min-height: 90px;">
+                                <span>Costo de Capital Financiero (Ke)</span><br>
+                                El rendimiento financiero esperado por los accionistas.
+                            </div>
+                            <div class="card-footer">
+                                <h2 v-text="formatterx100p(ke)"></h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card shadow-sm bs-card-a1" style="min-height: 19rem;">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fa-solid fa-signal"></i></h3>
+                            </div>
+                            <div class="card-body" style="min-height: 90px;">
+                                <span>Costo de Capital Económico (Koa)</span><br>
+                                El rendimiento económico esperado de las inversiones.
+                            </div>
+                            <div class="card-footer">
+                                <h2 v-text="formatterx100p(koa)"></h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Content container-->
+</div>
+<!--end::Content-->
+
+{% endblock %}
+
+{% block script %}
+    <script src="/assets/web/js/resultKapital.js"></script>
+{% endblock %}

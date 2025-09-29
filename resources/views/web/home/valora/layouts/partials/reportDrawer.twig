@@ -1,0 +1,187 @@
+{% if data.uid  %}
+<!--begin::Activities drawer-->
+<div id="kt_activities" class="bg-body" data-kt-drawer="true" data-kt-drawer-name="activities" data-kt-drawer-activate="true" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'300px', 'lg': '600px'}" data-kt-drawer-direction="end" data-kt-drawer-toggle="#kt_activities_toggle" data-kt-drawer-close="#kt_activities_close">
+    <div class="card shadow-none border-0 rounded-0">
+        <!--begin::Header-->
+        <div class="card-header" id="kt_activities_header">
+            <h3 class="card-title fw-bold text-dark"></h3>
+            <div class="card-toolbar">
+                <button type="button" class="btn btn-sm btn-icon btn-active-light-primary me-n5" id="kt_activities_close">
+                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                    <span class="svg-icon svg-icon-1">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="currentColor" />
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="currentColor" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                </button>
+            </div>
+        </div>
+        <!--end::Header-->
+        <!--begin::Body-->
+        <div class="card-body position-relative" id="kt_activities_body">
+            <!--begin::Content-->
+            <div id="kt_activities_scroll" class="position-relative scroll-y me-n5 pe-5" data-kt-scroll="true" data-kt-scroll-height="auto" data-kt-scroll-wrappers="#kt_activities_body" data-kt-scroll-dependencies="#kt_activities_header, #kt_activities_footer" data-kt-scroll-offset="5px">
+                <div class="d-flex justify-content-center" id="AppReportValoraWeb">                
+                    <div class="col-lg-11">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h2 class="mb-4">Genera un reporte con tus datos</h2>
+                                <div class="mb-15">Identifica el costo de capital al que se enfrenta tu empresa, proyecto o inversión.</div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="table-loading" v-show="loading">
+                                    <div class="table-loading-message">
+                                        Cargando...
+                                    </div>
+                                </div>
+                                <form @submit="onFormReport" id="formReportValora">
+                                    <h4 class="mb-5">Seleccione el producto de su preferencia:</h4>
+                                    <div class="row mb-10 d-inline-flex">
+                                        <input class="opacity-0" name="report" type="radio" value="" required>
+                                        
+                                        <div class="col" v-for="(item, index) in designs">
+                                            <input class="opacity-0 bs-check-1 check-report" name="report" :id="'check'+index" type="radio" :value="item.id" :data-content-id="item.content_id">
+                                            <label class="card bs-card-rp1 bs-card-report" :for="'check'+index" style="max-width: 160px;" :title="item.name">
+                                                <div class="card-body">
+                                                    <div class="card-icon">
+                                                        <i class="fa-solid fa-laptop"></i>
+                                                    </div>
+                                                    <span class="card-text" v-text="item.name.substring(0,30)"></span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        {# <div class="col-lg-4">
+                                            <input class="opacity-0 bs-check-1 check-report" name="report" id="check1" type="radio" value="reporte-datos">
+                                            <label class="card bs-card-rp1 bs-card-report" for="check1">
+                                                <div class="card-body">
+                                                    <div class="card-icon">
+                                                        <i class="fa-solid fa-laptop"></i>
+                                                    </div>
+                                                <span class="card-text">Reporte de datos</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <input class="opacity-0 bs-check-1 check-report" name="report" id="check2" type="radio" value="reporte-detallado">
+                                            <label class="card bs-card-rp1 bs-card-report" for="check2">
+                                                <div class="card-body">
+                                                    <div class="card-icon">
+                                                    <i class="fa-solid fa-chart-simple"></i>
+                                                    </div>
+                                                <span class="card-text">Reporte detallado</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <input class="opacity-0 bs-check-1 check-report" name="report" id="check3" type="radio" value="consultoria-especializada">
+                                            <label class="card bs-card-rp1 bs-card-report" for="check3">
+                                                <div class="card-body">
+                                                    <div class="card-icon">
+                                                        <i class="fa-regular fa-envelope"></i>
+                                                    </div>
+                                                <span class="card-text">Consultoría especializada</span>
+                                                </div>
+                                            </label>
+                                        </div> #}
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-12">
+                                <h3 class="mb-10">Contenido:</h3>
+
+                                <div class="mb-5" v-for="(item, index) in design_contents">
+                                    <div class="form-check">
+                                        <i v-if="item.edit == 0" class="fa-solid fa-square-check checkform fs-2 me-2"></i>
+                                        <input v-else v-model="all_checked" type="checkbox" class="me-2 ms-1" style="transform: scale(1.4);" :value="item.id">
+                                        <span v-text="item.name"></span>
+                                    </div>
+                                </div>
+
+                                {# <div class="mb-5">
+                                    <div class="form-check">
+                                        <i class="fa-solid fa-square-check checkform fs-2 me-2"></i>
+                                        Costo de capital del sector
+                                    </div>
+                                </div>
+                                <div class="mb-5">
+                                    <div class="form-check">
+                                        <i class="fa-solid fa-square-check checkform fs-2 me-2"></i>
+                                        Costo de capital de la empresa
+                                    </div>
+                                </div>
+                                <div class="mb-5">
+                                    <div class="form-check">
+                                        <i class="fa-solid fa-square-check checkform fs-2 me-2"></i>
+                                        Metodología explicada
+                                    </div>
+                                </div>
+                                <div class="mb-5">
+                                    <div class="form-check">
+                                        <i class="fa-solid fa-square-check checkform fs-2 me-2"></i>
+                                        1 hora de consultoría
+                                    </div>
+                                </div> #}
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="d-flex justify-content-center mt-15">  
+                                    <div class="col-lg-9">
+                                        <button type="submit" class="btn btn-primary w-100 mb-4" form="formReportValora">GENERAR REPORTE</button>
+                                        <button type="button" class="btn btn-light w-100 mb-4" data-bs-toggle="modal" data-bs-target="#kt_modal_cotizar">COTIZAR CONSULTORÍA</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Content-->
+        </div>
+        <!--end::Body-->
+        <!--begin::Footer-->
+        {# <div class="card-footer py-5 text-center" id="kt_activities_footer">
+            <a href="../../demo1/dist/pages/user-profile/activity.html" class="btn btn-bg-body text-primary">View All Activities
+            <!--begin::Svg Icon | path: icons/duotune/arrows/arr064.svg-->
+            <span class="svg-icon svg-icon-3 svg-icon-primary">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect opacity="0.5" x="18" y="13" width="13" height="2" rx="1" transform="rotate(-180 18 13)" fill="currentColor" />
+                    <path d="M15.4343 12.5657L11.25 16.75C10.8358 17.1642 10.8358 17.8358 11.25 18.25C11.6642 18.6642 12.3358 18.6642 12.75 18.25L18.2929 12.7071C18.6834 12.3166 18.6834 11.6834 18.2929 11.2929L12.75 5.75C12.3358 5.33579 11.6642 5.33579 11.25 5.75C10.8358 6.16421 10.8358 6.83579 11.25 7.25L15.4343 11.4343C15.7467 11.7467 15.7467 12.2533 15.4343 12.5657Z" fill="currentColor" />
+                </svg>
+            </span>
+            <!--end::Svg Icon--></a>
+        </div> #}
+        <!--end::Footer-->
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" id="kt_modal_cotizar">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">COTIZAR CONSULTORÍA</h3>
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-active-light-info ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa-solid fa-close text-info fs-3"></i>
+                </div>
+                <!--end::Close-->
+            </div>
+            <div class="modal-body">
+                <form id="formMessage" class="formMessage">
+                    <div class="mb-5">
+                        <label for="">Correo electrónico</label>
+                        <input type="email" class="form-control form-control-solid" name="email" value="{{ APP.SESSION.USER.email }}" placeholder="" required>
+                    </div>
+                    <div class="mb-5">
+                        <label for="">Mensaje</label>
+                        <textarea class="form-control form-control-solid" name="description" id="" rows="5" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" form="formMessage">Enviar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::Activities drawer-->
+{% endif %}

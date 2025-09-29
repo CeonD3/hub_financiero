@@ -1,0 +1,209 @@
+{% set footer = [] %}
+{% set cont_resultado = [] %}
+{% set cont_analisis = [] %}
+{% for item in contents %}
+    {% if item.alias == 'footer' %}
+        {% set footer = item.contents %}
+    {% endif %}
+	{% if item.alias == 'resul' %}
+        {% set cont_resultado = item.contents %}
+    {% endif %}
+	{% if item.alias == 'valor' %}
+        {% set cont_analisis = item.contents %}
+    {% endif %}
+{% endfor %}	
+<!doctype html>
+<html lang="es">
+<head>
+	<base href=""/>
+	<title>Plataforma Finanzas</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="shortcut icon" href="https://kapitals.org/assets/image/favicon.png" />
+	<!--begin::Fonts(mandatory for all pages)-->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+	<!--end::Fonts-->
+	<link href="/assets/web/css/bundle.min.css" rel="stylesheet" type="text/css" />
+	<!-- Bootstrap Font Icon CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+	<!--end::Global Stylesheets Bundle-->
+	<link href="/assets/web/css/web.min.css" rel="stylesheet" type="text/css" />
+	<script>
+		window.AppFinanceWeb = {
+			userId: 1,
+	    	modules: [],
+			api: '{{ APP.API_URL_FINANCE }}',
+			margarita: '{{ APP.API_URL_MARGARITA }}',
+			uid: '{{ data.uid }}'
+		};
+	</script>
+    {% block style %}{% endblock %}
+</head>
+<body id="kt_body" style="background-image: url()" class="header-fixed header-tablet-and-mobile-fixed aside-fixed aside-secondary-enabled">
+	<!--begin::Theme mode setup on page load-->
+	<script>var defaultThemeMode = "light"; var themeMode; if ( document.documentElement ) { if ( document.documentElement.hasAttribute("data-theme-mode")) { themeMode = document.documentElement.getAttribute("data-theme-mode"); } else { if ( localStorage.getItem("data-theme") !== null ) { themeMode = localStorage.getItem("data-theme"); } else { themeMode = defaultThemeMode; } } if (themeMode === "system") { themeMode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } document.documentElement.setAttribute("data-theme", themeMode); }</script>
+	<!--end::Theme mode setup on page load-->
+	<!--begin::Main-->
+	<!--begin::Root-->
+	{% if success is defined and success == false %}
+		{% include "web/home/valora/layouts/partials/errorMessage.twig" %}
+	{% endif %}
+	<div class="d-flex flex-column flex-root">
+		<!--begin::Page-->
+		<div class="page d-flex flex-row flex-column-fluid">
+			<!--begin::Aside-->
+			{% include "web/home/valora/layouts/partials/aside.twig" %}
+			<!--end::Aside-->
+			<!--begin::Wrapper-->
+			<div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
+				<!--begin::Header-->
+				<div id="kt_header" class="header bg-white mb-5" data-kt-sticky="true" data-kt-sticky-name="header" data-kt-sticky-offset="{default: '200px', lg: '300px'}">
+					<!--begin::Container-->
+					<div class="container-xxl d-flex align-items-center justify-content-between" id="kt_header_container">
+						<!--begin::Page title-->
+						<div class="page-title d-flex flex-column align-items-start justify-content-center flex-wrap mt-n5 mt-lg-0 me-lg-2 pb-2 pb-lg-0" data-kt-swapper="true" data-kt-swapper-mode="prepend" data-kt-swapper-parent="{default: '#kt_content_container', lg: '#kt_header_container'}">
+							<!--begin::Heading-->
+							<h1 class="text-dark fw-bold my-0 fs-2"></h1>
+							<!--end::Heading-->
+							<!--begin::Breadcrumb-->
+							{# <ul class="breadcrumb fw-semibold fs-base my-1">
+								<li class="breadcrumb-item text-muted">
+									<a href="../../demo7/dist/index.html" class="text-muted">Home</a>
+								</li>
+								<li class="breadcrumb-item text-muted">Dashboards</li>
+								<li class="breadcrumb-item text-dark">Default</li>
+							</ul> #}
+							<!--end::Breadcrumb-->
+						</div>
+						<!--end::Page title=-->
+						<!--begin::Wrapper-->
+						<div class="d-flex d-lg-none align-items-center ms-n2 me-2">
+							<!--begin::Aside mobile toggle-->
+							<div class="btn btn-icon btn-active-icon-primary" id="kt_aside_mobile_toggle">
+								<!--begin::Svg Icon | path: icons/duotune/abstract/abs015.svg-->
+								<span class="svg-icon svg-icon-1">
+									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+										<path d="M21 7H3C2.4 7 2 6.6 2 6V4C2 3.4 2.4 3 3 3H21C21.6 3 22 3.4 22 4V6C22 6.6 21.6 7 21 7Z" fill="currentColor" />
+										<path opacity="0.3" d="M21 14H3C2.4 14 2 13.6 2 13V11C2 10.4 2.4 10 3 10H21C21.6 10 22 10.4 22 11V13C22 13.6 21.6 14 21 14ZM22 20V18C22 17.4 21.6 17 21 17H3C2.4 17 2 17.4 2 18V20C2 20.6 2.4 21 3 21H21C21.6 21 22 20.6 22 20Z" fill="currentColor" />
+									</svg>
+								</span>
+								<!--end::Svg Icon-->
+							</div>
+							<!--end::Aside mobile toggle-->
+							<!--begin::Logo-->
+							<a href="../../demo7/dist/index.html" class="d-flex align-items-center">
+								<img alt="Logo" src="https://kapitals.org/assets/image/logo.png" class="h-30px" />
+							</a>
+							<!--end::Logo-->
+						</div>
+						<!--end::Wrapper-->
+						<!--begin::Toolbar wrapper-->
+						<div class="d-flex flex-shrink-0">
+							{% block navbar %} {% endblock %}
+						</div>
+						<!--end::Toolbar wrapper-->
+					</div>
+					<!--end::Container-->
+				</div>
+				<!--end::Header-->
+				<!--begin::Content-->
+				<div class="content d-flex flex-column flex-column-fluid" id="kt_content">
+					{% block content %} {% endblock %}
+				</div>
+				<!--end::Content-->
+				{% include "web/home/valora/layouts/partials/footer.twig" %} 
+			</div>
+			<!--end::Wrapper-->
+		</div>
+		<!--end::Page-->
+	</div>
+	<!--end::App-->
+	<!--begin::Engage drawers-->
+	{% include "web/home/valora/layouts/partials/reportDrawer.twig" %}
+	{% block drawer %} {% endblock %}	
+	<!--end::Engage drawers-->
+	<div class="modal fade" tabindex="-1" id="modalFileUsername">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title">Plantilla de valorización</h3>
+					<!--begin::Close-->
+					<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+						<i class="fa-solid fa-xmark fs-1 text-primary"></i>
+					</div>
+					<!--end::Close-->
+				</div>
+				<div class="modal-body">
+					
+					<div class="notice d-flex bg-light-primary rounded border-primary border border-dashed  flex-shrink-0 p-6">
+						<!--begin::Icon-->
+						<i class="fs-2tx text-primary me-4 fa-solid fa-circle-info"></i>
+						<!--end::Icon-->
+						<!--begin::Wrapper-->
+						<div class="d-flex flex-stack flex-grow-1 flex-wrap flex-md-nowrap">
+							<!--begin::Content-->
+							<div class="mb-3 mb-md-0 fw-semibold">
+								{# <h4 class="text-gray-900 fw-bold">Database Backup Process Completed!</h4>     #}
+								<div class="fs-6 text-gray-700 pe-7">Sus estados financieros deben estar en la plantilla para poder llenar la información</div>
+							</div>
+							<!--end::Content-->                    
+						</div>
+						<!--end::Wrapper-->  
+					</div>
+					<div class="dropzone mt-5 mb-2">
+						<!--begin::Message-->
+						<div class="dz-message needsclick">
+							<i class="fa-solid fa-file-arrow-up text-primary my-auto fs-2tx"></i>
+							<!--begin::Info-->
+							<div class="ms-4">
+								<h3 class="fs-5 fw-bold text-gray-900 mb-1">Haga clic para cargar. <span class="fs-7 fw-semibold text-gray-400">Sube hasta 1 archivo</span></h3>
+								<form class="formTemplateUserValora" id="formTemplateUserValora" uid="{{ data.uid }}">
+									<input type="file" class="form-control" name="file" required>
+								</form>
+							</div>
+							<!--end::Info-->
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-12 text-center mt-5">
+							<a href="{{ APP.API_URL_FINANCE }}/assets/files/PlantillaUsuarioValora.xlsx" class="mx-auto" download>Descargar plantilla de estados financieros <i class="fa-solid fa-download text-primary"></i></a>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+					<button type="submit" class="btn btn-primary" form="formTemplateUserValora">Subir</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--begin::Engage modals-->
+	{% block modal %} {% endblock %}
+	<!--end::Engage modals-->
+	<!--begin::Scrolltop-->
+	<div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
+		<!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
+		<span class="svg-icon">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="currentColor" />
+				<path d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z" fill="currentColor" />
+			</svg>
+		</span>
+		<!--end::Svg Icon-->
+	</div>
+	<!--end::Scrolltop-->
+    <script>var hostUrl = "assets/";</script>
+    <script src="/assets/web/js/bundle.min.js"></script>
+
+	{# <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+	<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+	<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+    <script src="https://cdn.amcharts.com/lib/4/plugins/regression.js"></script>  #}
+
+    {# <script src="/assets/admin/js/handle.js"></script> #}
+	<script src="/assets/web/js/graph.js"></script>
+	<script src="/assets/web/js/main.js"></script>
+	<script src="/assets/web/js/events.js"></script>
+    {% block script %} {% endblock %}
+</body>
+</html>

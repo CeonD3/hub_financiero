@@ -1,0 +1,197 @@
+{% extends "web/home/valora/layouts/main.twig" %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block navbar %}
+    {% include "web/home/valora/layouts/partials/navbar.twig" with { 'selected': 'result' } %}
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column flex-column-fluid mt-5">
+    <!--begin::Content-->
+    <div id="AppResultValoraWeb" uid="{{ data.uid }}" class="app-content flex-column-fluid mb-0">
+        <!--begin::Content container-->
+        {# <div id="kt_app_content_container" class="app-container container-xxl"> #}
+        <div id="kt_app_content_container" class="container">
+            {# <div class="col-lg-12 table-loading mt-3" v-show="loading">
+                <div class="table-loading-message" v-if="loading">
+                    Cargando...
+                </div>
+            </div> #}
+            <!--begin::Row-->
+            {# <div class="row" style="display:none;" v-show="!loading">
+            </div> #}
+            <div class="col-lg-12">
+                <div class="card shadow-sm mb-5">
+                    <div class="card-header bg-light py-4">
+                        <div class="container my-auto">
+                            <div class="row">
+                                <div class="col">
+                                    <i class="fa-solid fa-triangle-exclamation fs-1"></i>
+                                </div>
+                                <div class="col text-center">
+                                    <h3>MÉTODO POR CONCEPTOS</h3>
+                                </div>
+                                <div class="col text-end">
+                                    <i class="fa-solid fa-circle-info fs-1" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-dismiss="click" title="{{ cont_resultado[0].content_name }} {#Mediante este método, VALORA realiza la proyección de cada componente del Flujo de Caja Económico (FCE).#}"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-lg-12 table-loading mt-1" v-show="loading">
+                            <div class="table-loading-message" v-if="loading">
+                                Cargando...
+                            </div>
+                        </div>
+                        <div class="row" style="display:none;" v-show="!loading">
+                            <div class="col">
+                                <ul class="list-group list-group-flush mb-10">
+                                    <li class="list-group-item py-10">
+                                        <div class="row">
+                                            <div class="col"><h4>VALOR DEL PATRIMONIO</h4></div>
+                                            <div class="col text-end"><h3 class="text-success fs-1" v-text="concept.patrimony ?? 0.00">0</h3></div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item py-10">
+                                        <div class="row">
+                                            <div class="col"><h4>VALOR DE EMPRESA</h4></div>
+                                            <div class="col text-end"><h3 class="text-danger fs-1" v-text="concept.company ?? 0.00">0</h3></div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item py-10">
+                                        <div class="row">
+                                            <div class="col"><h4>VALOR POR ACCIÓN</h4></div>
+                                            <div class="col text-end"><h3 class="text-primary fs-1" v-text="concept.action ?? 0.00">0</h3></div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col">  
+                                <h3 class="mb-5">Balance General Contable</h3>
+                                <div style="overflow-x: auto;overflow-y: hidden;">
+                                    <div class="mb-2" id="bsGroup1" style="height:250px;width:500px;margin: auto;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card shadow-sm mb-5">
+                    <div class="card-header bg-light">
+                        <div class="container my-auto">
+                            <div class="row">
+                                <div class="col">
+                                    <i class="fa-solid fa-chart-pie fs-1"></i>
+                                </div>
+                                <div class="col text-center">
+                                    <h3>MÉTODO INTEGRADO</h3>
+                                </div>
+                                <div class="col text-end">
+                                    <i class="fa-solid fa-circle-info fs-1" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-dismiss="click" title="{{ cont_resultado[1].content_name }}{#Mediante este método, VALORA realiza una proyección del flujo de caja operativo de forma histórica, complementándola con la proyección de las inversiones y la variación en el capital de trabajo para obtener el FCE proyectado.#}"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="col-lg-12 table-loading mt-1" v-show="loading">
+                            <div class="table-loading-message" v-if="loading">
+                                Cargando...
+                            </div>
+                        </div>
+                        <div class="row" style="display:none;" v-show="!loading">
+                            <div class="col">
+                                <ul class="list-group list-group-flush mb-10">
+                                    <li class="list-group-item d-flex py-10">
+                                        <div class="col"><h4>VALOR DEL PATRIMONIO</h4></div>
+                                        <div class="col text-end"><h3 class="text-success fs-1" v-text="integrated.patrimony ?? 0.00">0</h3></div>
+                                    </li>
+                                    <li class="list-group-item d-flex py-10">
+                                        <h4>VALOR DE EMPRESA</h4>
+                                        <div class="col text-end"><h3 class="text-danger fs-1" v-text="integrated.company ?? 0.00">0</h3></div>
+                                    </li>
+                                    <li class="list-group-item d-flex py-10">
+                                        <h4>VALOR POR ACCIÓN</h4>
+                                        <div class="col text-end"><h3 class="text-primary fs-1"  v-text="integrated.action ?? 0.00">0</h3></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col">
+                                <h3 class="mb-5">Balance General Contable</h3>
+                                <div style="overflow-x: auto;overflow-y: hidden;">
+                                    <div class="mb-2" id="bsGroup2" style="height:250px;width:500px;margin: auto;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card shadow-sm mb-5">
+                    <div class="card-header bg-light-primary">
+                        <div class="container my-auto">
+                            <div class="row">
+                                <div class="col">
+                                    <i class="fa-solid fa-arrow-up-right-from-square fs-1"></i>
+                                </div>
+                                <div class="col text-center">
+                                    <h3>COTIZACIÓN EN BVL</h3>
+                                </div>
+                                <div class="col text-end">
+                                    <i class="fa-solid fa-circle-info fs-1" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-dismiss="click" title="{{ cont_resultado[2].content_name }}"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body bg-light-primary">
+                        <div class="col-lg-12 table-loading mt-1" v-show="loadingBVL">
+                            <div class="table-loading-message" v-if="loadingBVL">
+                                Cargando...
+                            </div>
+                        </div>
+                        <div class="row" style="display:none;" v-show="!loadingBVL">
+                            <div class="col">
+                                <div class="container mb-10">
+                                    <form>
+                                        <div class="mb-3 row">
+                                            <label for="inputName" class="col-4 col-form-label">Empresa</label>
+                                            <select class="form-select form-select-lg" name="" id="" @change="onCompany">
+                                                <option v-for="(item, index) in companies" :value="index" v-text="item?.length ? item[0] : ''"></option>
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex py-5 bg-light-primary">
+                                        <h4>VALOR POR ACCIÓN</h4>
+                                        <div class="col text-end"><h3 class="text-success" v-text="company[4]">0</h3></div>
+                                    </li>                                        
+                                    <li class="list-group-item d-flex py-5 bg-light-primary">
+                                        <h4>CAPITALIZACIÓN BURSÁTIL</h4>
+                                        <div class="col text-end"><h3 class="text-primary"v-text="company[3]">0</h3></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Content container-->
+    </div>
+    <!--end::Content-->
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+    <script src="/assets/web/js/resultValora.js"></script>
+{% endblock %}

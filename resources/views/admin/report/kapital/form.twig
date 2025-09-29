@@ -1,0 +1,272 @@
+{% extends "admin/layouts/main.twig" %}
+
+{% block style %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" integrity="sha512-ZbehZMIlGA8CTIOtdE+M81uj3mrcgyrh6ZFeG33A4FHECakGrOsTPlPQ8ijjLkxgImrdmSVUHn1j+ApjodYZow==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    .accordion-body img {
+        max-width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-column-fluid">
+    <!--begin::Toolbar-->
+    <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+        <!--begin::Toolbar container-->
+        <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
+            <!--begin::Page title-->
+            <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                <!--begin::Title-->
+                <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">GESTIÓN DE REPORTES DE KAPITAL</h1>
+                <!--end::Title-->
+                <!--begin::Breadcrumb-->
+                <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-muted">
+                        <a href="/admin" class="text-muted text-hover-primary">Home</a>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item">
+                        <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-muted">Plantillas</li>
+                    <!--end::Item-->
+                </ul>
+                <!--end::Breadcrumb-->
+            </div>
+            <!--end::Page title-->
+            <!--begin::Actions-->
+            <div class="d-flex align-items-center gap-2 gap-lg-3">
+                <!--begin::Primary button-->
+                <!--end::Primary button-->
+            </div>
+            <!--end::Actions-->
+        </div>
+        <!--end::Toolbar container-->
+    </div>
+    <!--end::Toolbar-->
+    <!--begin::Content-->
+    <div id="kt_app_content" class="app-content flex-column-fluid">
+        <!--begin::Content container-->
+        <div id="AppFormDesignAdmin" class="app-container container-fluid">
+            <div class="row gx-5 gx-xl-10">
+                <!--begin::Col-->
+                <div class="col-sm-12 col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-4">
+                                    <h4 class="d-inline">
+                                    {% if data.design.id %}
+                                        EDITAR 
+                                    {% else %}
+                                        CREAR 
+                                    {% endif %}
+                                    DISEÑO DE REPORTE                
+                                    </h4> 
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-8 col-md-7 mb-5">
+                                    <div class="row">
+                                        <input type="hidden" value="{{data.design.id}}" name="id" form="formDesign">
+                                        <input type="hidden" value="1" name="platform_id" form="formDesign">
+                                        <div class="col-lg-10 col-md-8 mb-5">
+                                            <label>Nombre</label>
+                                            <input type="text" class="form-control" form="formDesign" name="name" value="{{data.design.name}}" required>
+                                        </div>
+                                        {# <div class="col-lg-12 mb-5">
+                                            <label>Cabeza de página</label>
+                                            <textarea name="header" id="header_summernote" form="formDesign" :value="design.header"></textarea>
+                                        </div> 
+                                        <div class="col-lg-12 mb-5">
+                                            <label>Pie de página</label>
+                                            <textarea name="footer" id="footer_summernote" form="formDesign" :value="design.footer"></textarea>
+                                        </div>  #}
+                                        <div class="col-lg-2 col-md-4 mb-5">
+                                            <div class="mb-5 mt-4">
+                                                <div class="form-check text-right">
+                                                    <input class="form-check-input" type="checkbox" value="1" form="formDesign" name="status" id="invalidCheck2" {{ data.design.status == 1 ? 'checked' : '' }}>
+                                                    <label class="form-check-label ml-2" for="invalidCheck2">
+                                                        Activar
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 mb-5">
+                                            <label>Precio</label>
+                                            <input type="text" class="form-control" form="formDesign" name="price" value="{{data.design.price}}">
+                                        </div>
+                                        <div class="col-lg-3 mb-5">
+                                            <label>Moneda</label>
+                                            <select class="form-control" form="formDesign" name="currency">
+                                                <option value="PEN" {{ data.design.currency == 'PEN' ? 'selected' : '' }}>SOLES</option>
+                                                <option value="USD" {{ data.design.currency == 'USD' ? 'selected' : '' }}>DOLARES</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-3 mb-5">
+                                            <label>Sector/Empresa</label>
+                                            <select class="form-control" name="type_id" form="formDesign">
+                                                <option value="1" {{ data.design.type_id == 1 ? 'selected' : '' }}>Empresa</option>
+                                                <option value="2" {{ data.design.type_id == 2 ? 'selected' : '' }}>Sectorial</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-3 mb-5">
+                                            <label>Bono/Ajustado</label>
+                                            <select class="form-control" name="type_b_a" form="formDesign">
+                                                <option value="1" {{ data.design.type_b_a == 1 ? 'selected' : '' }}>Bono EE.UU</option>
+                                                <option value="2" {{ data.design.type_b_a == 2 ? 'selected' : '' }}>Ajustar Rf </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-3 mb-5">
+                                            <label>Contenido</label>
+                                            <select class="form-control" name="content_id" form="formDesign">
+                                                {% for item in data.contents %}
+                                                    <option value="{{ item.id }}" {{ item.id == data.design.content_id ? 'selected' : '' }}>{{ item.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>                 
+                                        <div class="col-lg-9 mb-5">
+                                            <label>Link de pago</label>
+                                            <input type="text" class="form-control" form="formDesign" name="link_payment" value="{{data.design.link_payment}}">
+                                        </div>
+                                        <div class="col-lg-9 mb-5">
+                                            <label>Portada</label>
+                                            {# <input type="file" name="image" form="formDesign" class="form-control" id="img-file"  accept="image/*"> #}
+                                            <select class="form-control form-select" name="cover_id" form="formDesign">
+                                                <option value="" selected hidden>[SELECCIONE]</option>
+                                                {% for item in data.covers %}
+                                                <option value="{{ item.id }}" {{ item.id == data.design.cover_id ? 'selected' : '' }}> {{ item.name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-3 mb-5 text-end">
+                                            {# {% if data.design.image %}
+                                                <img src="{{ data.design.image ? APP.API_URL_FINANCE ~ data.design.image : 'Seleccione Portada' }}" height="100">
+                                            {% endif %} #}
+                                            {% if data.design.cover_id > 0 %}
+                                                {% for item in data.covers %}
+                                                    {% if item.id == data.design.cover_id %}
+                                                        <img src="{{ item.file ? APP.API_URL_FINANCE ~ item.file : 'Seleccione Portada' }}" height="100">
+                                                    {% endif %}
+                                                    
+                                                {% endfor %}                                            
+                                            {% endif %}
+                                            
+                                        </div>
+                                        <div class="col-lg-12 mt-3">
+                                            <div class="alert alert-info" role="alert">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <b>$BLOQUE_INICIO$</b> <br>Inicia una fila de columnas<br>
+                                                        <b>$BLOQUE_FIN$</b> <br>Cierra la fila iniciada
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <b>Para insertar estilos y clases a un elemento ingresado debe de seguir estos patrones como ejemplo:</b>
+                                                        $$W6OMQ$$[*height:350px;][.col-6]<br>
+                                                        Estilos: [*height:350px;*width:50%;]<br>
+                                                        Clases: [.col-2.col-3.col-4] => [1|2|3|4|5|6|7|8|9|10|11|12]<br>
+                                                        Las clases que contengan <b>col</b> se comportarán como columnas si están dentro de un bloque.<br>
+                                                        Para la edición de textos se debe de ingresar dentro de estas llaves por ejemplo <b>{= hola =}</b> o <b>{= hola =}[.col-6]</b>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 mb-5">
+                                            <label>Cuerpo de página</label>
+                                            <textarea name="body" id="body_summernote" form="formDesign" class="tox-target">
+                                            {{data.design.body}}
+                                            </textarea>
+                                        </div> 
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-5 form-">
+                                    <div class="panel-admin-sticky">
+                                        <h2 class="card-title">Estructura de Gráficos</h2>
+                                        <div class="accordion" id="accordionTemplate">
+                                            {% for index, item in data.template_structures %}
+                                            {% if item.type == 'text' %}
+                                            
+                                            {% else %}
+                                                <div class="accordion-item">
+                                                    <div class="accordion-header" id="heading-{{ index }}">
+                                                        <h5 class="mb-0">
+                                                            <button class="accordion-button {{ index == 0 ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#collapse-{{ index }}" aria-expanded="{{ index == 0 ? 'true' : 'false' }}" aria-controls="collapse-{{ index }}">
+                                                                {{ item.name }}
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                    <div id="collapse-{{ index }}" class="accordion-collapse collapse {{index == 0 ? 'show' : ''}}" aria-labelledby="heading-{{ index }}"  data-parent="#accordionTemplate">
+                                                        <div class="accordion-body" style="overflow: scroll;">
+
+                                                            <h3>{{item.code}}</h3>
+                                                            <div style="max-width: 100%;">{{item.html|raw}}</div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                            
+                                            {% endfor %}
+                                        </div>
+                                        {# <label>Estructura de Gráficos</label>
+                                        <div class="accordion">
+                                            {% for index, item in data.structure %}
+                                                <div class="accordion-item">
+                                                    <div class="accordion-header" id="heading-{{ index }}">
+                                                        <h5 class="mb-0">
+                                                            <button class="accordion-button {{ index == 0 ? '' : 'collapsed' }}" data-bs-toggle="collapse" data-bs-target="#collapse-{{ index }}" aria-expanded="{{ index == 0 ? 'true' : 'false' }}" aria-controls="collapse-{{ index }}">
+                                                                {{ item.name }}
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                    <div id="collapse-{{ index }}" class="accordion-collapse collapse {{index == 0 ? 'show' : ''}}" aria-labelledby="heading-{{ index }}">
+                                                        <div class="accordion-body">
+
+                                                            <ul class="list-group">
+                                                            {% for index2, item2 in item.contents %}
+                                                                <li class="list-group-item">
+                                                                    <span class="text-primary cursor-pointer" onClick="copyClipboardReport('copy-{{item2.id}}')">{{ item2.code }}</span>
+                                                                    <input type="text" id="copy-{{item2.id}}" value="{{ item2.code }}" style="opacity: 0;width:10px;"><br>
+                                                                    <span class="text-dark">{{ item2.name }}</span><br>
+                                                                    {% if item2.image %}
+                                                                    <img src="{{ APP.API_URL_FINANCE }}{{ item2.image }}" style="max-height:90px; max-width:100%;">
+                                                                    {% endif %}
+                                                                </li>             
+                                                            {% endfor %}
+                                                            </ul>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div> #}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <form @submit="onFormData" id="formDesign" class="text-right">
+                                        <button type="submit" class="btn btn-primary">Guardar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Content-->
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js" integrity="sha512-lVkQNgKabKsM1DA/qbhJRFQU8TuwkLF2vSN3iU/c7+iayKs08Y8GXqfFxxTZr1IcpMovXnf2N/ZZoMgmZep1YQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>    
+<script src="/assets/admin/js/design.js"></script>
+{% endblock %}

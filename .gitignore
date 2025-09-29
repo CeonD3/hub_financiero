@@ -1,0 +1,8 @@
+vendor/
+.env
+composer.lock
+public/uploads/*
+node_modules
+package-lock.json
+logs/*
+public/assets/files/stacks/*

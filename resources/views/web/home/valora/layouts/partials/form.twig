@@ -1,0 +1,116 @@
+<form class="formInputValora" id="{{ data.uid }}">
+    <div class="card shadow-none mb-5">
+        <div class="card-header p-0">
+            <div class="card-title">
+                <span class="badge bg-primary rounded-pill me-1">1</span>
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">
+                        Ingrese inputs de su país
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body px-0 pb-0">
+            <div class="mb-3 row">
+                <label class="col-lg-4 col-form-label">Fecha</label>
+                <div class="col-lg-8">
+                    <select class="form-select" data-control="select2" name="date" data-placeholder="SELECCIONE" required>
+                        <option></option>
+                        {% for item in data.form.dates %}
+                        <option value="{{ item }}" {{ data.form.date == item ? 'selected' : '' }}>{{ item }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-lg-4 col-form-label">País</label>
+                <div class="col-lg-8">
+                    <select class="form-select" data-control="select2" name="country" data-placeholder="SELECCIONE" required>
+                        <option></option>
+                        {% for item in data.form.countries %}
+                        <option value="{{ item }}" {{ data.form.country == item ? 'selected' : '' }}>{{ item }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-lg-4 col-form-label">Moneda</label>
+                <div class="col-lg-8">
+                    <select class="form-select" data-control="select2" name="currency" data-placeholder="SELECCIONE" required>
+                        <option></option>
+                        {% for item in data.form.currencies %}
+                        <option value="{{ item }}" {{ data.form.currency == item ? 'selected' : '' }}>{{ item }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-lg-4 col-form-label">Sector</label>
+                <div class="col-lg-8">
+                    <select class="form-select" data-control="select2" name="sector" data-placeholder="SELECCIONE" required>
+                        <option></option>
+                        {% for item in data.form.sectors %}
+                        <option value="{{ item }}" {{ data.form.sector == item ? 'selected' : '' }}>{{ item }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="card-header px-0">
+            <div class="card-title">
+                <span class="badge bg-primary rounded-pill me-1">2</span>
+                <div class="ms-2 me-auto">
+                    <div class="fw-bold">
+                        Ingrese inputs de su empresa
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body px-0 pb-0">
+            <div class="mb-3 row">
+                <label class="col-lg-8 col-form-label">Descargar plantilla EEFF</label>
+                <div class="col-lg-4">
+                    <a type="button" href="{{ APP.API_URL_FINANCE }}/assets/files/PlantillaUsuarioValora.xlsx" class="btn btn-light-primary float-end" download><i class="fa-solid fa-download"></i></a>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-lg-8 col-form-label">
+                    Subir plantilla EEFF
+                    {% if data.template.file_username is not defined %}
+                        <input type="text" name="fileUsername" value="" id="fileUsername" style="opacity: 0; height: 0px; width: 0px;" required>                    
+                    {% endif %}
+                </label>
+                <div class="col-lg-4">
+                    <button type="button" class="btn btn-light-primary float-end" data-bs-toggle="modal" data-bs-target="#modalFileUsername"><i class="fa-solid fa-file-import"></i></button>
+                </div>
+            </div>           
+            <div class="mb-3 row {{ data.template.file_username is not defined ? 'd-none' : '' }}" id="fileUsernameAlert">
+                <div class="col-lg-12 mt-2">
+                    <div class="alert alert-success d-flex align-items-center" role="alert">
+                        <i class="fa-regular fa-circle-check me-2 fs-2 text-success"></i>
+                        <div>
+                            Plantilla cargada 
+                            <a href="{{ APP.API_URL_FINANCE }}/upload/template/{{ data.template.file_username }}" download title="Descargar plantilla cargada" id="fileUsernameUrl">
+                                <i class="fa-solid fa-file-arrow-down text-success fs-2 float-end" style="right: 22px; position: absolute;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mb-3 row">
+                <label class="col-lg-4 col-form-label">Acciones</label>
+                <div class="col-lg-8">
+                    <input type="text" class="form-control" value="{{ data.form.action }}" name="action">
+                </div>
+            </div>
+        </div>
+        <div class="card-footer px-0 pb-0">
+            <button type="submit" class="btn btn-primary w-100">CALCULAR</button>
+        </div>
+        {# {% if data.uid %}
+        <div class="mt-5 text-center">
+            <a href="{{ APP.API_URL_FINANCE }}/template/users/{{ data.template.file }}" download>Plantilla Generada</a>
+        </div>
+        {% endif %} #}
+    </div>
+</form>

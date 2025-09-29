@@ -1,0 +1,126 @@
+{% set titulo = [] %}
+{% set cargos = [] %}
+{% set colaboradores = [] %}
+
+{% for item in equipo %}
+    {% if item.content_alias == 'tituloinf' %}
+        {% set titulo = titulo|merge([item]) %}
+    {% endif %}
+    {% if item.content_alias == 'cargo' %}
+        {% set cargos = cargos|merge([item]) %}
+    {% endif %}
+    {% if item.content_alias == 'colaborador' %}
+        {% set colaboradores = colaboradores|merge([item]) %}
+    {% endif %}
+{% endfor %}
+<!--begin::Team Section-->
+<div class="bs-landing-section bs-section-1" id="equipo">
+    <!--begin::Container-->
+    <div class="container">
+        <!--begin::Heading-->
+        <div class="col-lg-12 bs-section-header">
+            <!--begin::Title-->
+            <div class="bs-section-title">{{titulo[0].content_name}}</div>
+            <!--end::Title-->
+            <!--begin::Sub-title-->
+            <div class="bs-section-text">{{titulo[0].content_caption}}</div>
+            <!--end::Sub-title=-->
+        </div>
+        <div class="col-lg-12">
+            <div class="row py-5">
+                <div class="col-lg-6">
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label fs-1 text-center fw-bold">Autores</label>
+                        <div class="col-lg-8">
+                            
+                            {% for item in cargos %}
+                            <div class="card bs-card-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.content_name }}</h5>
+                                    <p class="card-text">{{ item.content_caption }}</p>
+                                </div>
+                            </div>  
+                            {% endfor %}
+                            {#
+                            <div class="card bs-card-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">PhD. Sergio Bravo Orellana</h5>
+                                    <p class="card-text">Director de proyecto.</p>
+                                </div>
+                            </div>  
+                            <div class="card bs-card-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Alvina Calluque</h5>
+                                    <p class="card-text">Asistente académico.</p>
+                                </div>
+                            </div>  
+                            <div class="card bs-card-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Yajaira Tácunan Alvarado</h5>
+                                    <p class="card-text">Asistente académico.</p>
+                                </div>
+                            </div> 
+                            <div class="card bs-card-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Max Huaccho Zavala</h5>
+                                    <p class="card-text">Asistente académico.</p>
+                                </div>
+                            </div> 
+                            <div class="card bs-card-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Albert Camacho</h5>
+                                    <p class="card-text">UX/UI Designer.</p>
+                                </div>
+                            </div>  
+                            #}                          
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3 row">
+                        <label class="col-lg-4 col-form-label fs-1 text-center fw-fold">Colaboradores</label>
+                        <div class="col-lg-8">
+                            {% for item in colaboradores %}
+                            <div class="card bs-card-4">
+                                <div class="card-body">
+                                    <img class="card-image" src="{{_company.host}}{{ item.imagens[0].patch }}"/>
+                                    <h5 class="card-title">{{ item.content_name }}</h5>
+                                    <p class="card-caption">{{ item.content_caption }}</p>
+                                    <div class="card-label">{{ item.content_description }}</div>                                    
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {#
+                            <div class="card bs-card-4">
+                                <div class="card-body">
+                                    <img class="card-image" src="/assets/media/images/logo-fri-consultoria.png"/>
+                                    <h5 class="card-title">Área de Consultoría FRI ESAN</h5>
+                                    <p class="card-caption">Reportes.</p>
+                                    <div class="card-label">Edwin de Olarte, Jefe del área</div>                                    
+                                </div>
+                            </div>  
+                            <div class="card bs-card-4">
+                                <div class="card-body">
+                                    <img class="card-image" src="/assets/media/images/logo-fri-consultoria.png"/>
+                                    <h5 class="card-title">Creative Marketing Ideas S.A.C</h5>
+                                    <p class="card-caption">Asesoría y Diseño Web.</p>
+                                    <div class="card-label">Asesoría y Diseño Web</div>                                    
+                                </div>
+                            </div>  
+                            <div class="card bs-card-4">
+                                <div class="card-body">
+                                    <img class="card-image" src="/assets/media/images/logo-fri-consultoria.png"/>
+                                    <h5 class="card-title">SoftDynamic S.A.C</h5>
+                                    <p class="card-caption">Asesoría y Programación Web.</p>
+                                    <div class="card-label">Alexander Zegarra, Gerente general</div>                                    
+                                </div>
+                            </div> 
+                            #}
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>

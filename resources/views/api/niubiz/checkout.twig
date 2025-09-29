@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<title>Niubiz</title>
+		<link rel="icon" type="image/png" sizes="32x32" href="https://www.niubiz.com.pe/wp-content/themes/visanet/assets/favicon/favicon-32x32.png?v=202001311356" howu-index="887">
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<!-- Bootstrap CSS v5.2.1 -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+		<style>
+		html, body {
+			background: linear-gradient(92.37deg, #def1fc 24.74%, rgba(222, 241, 252, 0.45) 91.45%);
+		}
+		.section__tarjetas {
+			/* background: linear-gradient(92.37deg, #def1fc 24.74%, rgba(222, 241, 252, 0.45) 91.45%);*/
+			height: 200px;
+			padding: 70px 0 38px;
+		}
+		.section__tarjetas .section__tarjetas__content .tarjetas__tittle {
+			flex-basis: 40%;
+		}
+		.section__tarjetas .section__tarjetas__content .tarjetas__imgs img {
+			border-radius: 10px;
+			width: 55px;
+			height: 52px;
+		}
+		.section__tarjetas .section__tarjetas__content .tarjetas__imgs {
+			flex-basis: 60%;
+			display: flex;
+			justify-content: space-between;
+			margin-top: 10px;
+		}
+		.section__tarjetas .section__tarjetas__content .tarjetas__p__interioru {
+			font-weight: normal;
+			text-align: left;
+			margin-top: 5px;
+		}
+		.section__tarjetas .section__tarjetas__content {
+			display: flex;
+			overflow-x: auto;
+		}
+		.site-block {
+			width: 90%;
+			max-width: 1200px;
+			margin: 0 auto;
+		}
+		.section__tarjetas .section__tarjetas__content .tarjetas__p__interioru {
+			font-weight: normal;
+			text-align: left;
+			margin-top: 5px;
+		}
+		.section__tarjetas .section__tarjetas__content .tarjetas__imgs p {
+			align-self: center;
+			font-weight: 600;
+			margin-top: 5px;
+		}
+		.container-payment {
+			background-image:url('https://www.niubiz.com.pe/wp-content/uploads/2022/12/banner-home-niubiz1.jpg;');		
+			height: 650px;
+			background-position: center;
+			background-size: cover;
+			padding-top: 15px;
+			margin: 0 auto;
+		}
+		</style>
+	</head>
+
+	<body>
+		<main>
+			{% if success %}
+			<nav class="navbar sticky-top navbar-light bg-light">
+				<div class="container py-2">
+					<a class="navbar-brand" href="#"><img src="https://www.niubiz.com.pe/wp-content/uploads/2023/01/Niubiz-logo-sin-fondo.png" height="50"></a>
+				</div>
+			</nav>
+			<div class="container-fluid container-payment">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-4">
+							<div class="d-flex justify-content-center">
+								<div class="card shadow-lg p-3 my-5 bg-body rounded">
+									<div class="card-body">
+										<div class="mb-4 row text-center" style="background-color: #def1fc; padding: 12px;">
+											<h1 style="text-align: center; font-size: 42px;">Pago Web<strong style="color:#ffc107;">.</strong></h1>
+										</div>
+										<div class="mb-2 row">
+											<label class="col-4 col-form-label">Monto: </label>
+											<div class="col-8">
+												<div class="form-control border-0">
+													<h4>{{ data.amount }}</h4>
+												</div>
+											</div>
+										</div>
+										<div class="mb-2 row">
+											<label class="col-4 col-form-label">Moneda: </label>
+											<div class="col-8">
+												<div class="form-control border-0">
+													<h5>SOLES</h5>
+												</div>
+											</div>
+										</div>
+										<div class="mt-4 row text-center">
+											{% if data.visaButtonStatus %}							
+												<form method="POST" role="form" action="/api/niubiz/transaction/{{ data.paymentId }}">
+													<script 
+														src="{{ data.urljs }}" 
+														data-sessiontoken="{{ data.sessionToken }}" 
+														data-channel="web" 
+														data-merchantid="{{ data.merchantId }}" 
+														data-buttonsize="LARGE" 
+														data-buttoncolor="" 
+														data-merchantname="" 
+														data-merchantlogo="{{ data.merchantLogo }}" 
+														data-formbuttoncolor="{{ data.merchantColor }}" 
+														data-amount="{{ data.amount }}" 
+														data-purchasenumber="{{ data.purchaseNumber }}" 
+														data-cardholdername="" 
+														data-cardholderlastname="" 
+														data-cardholderemail="{{data.email}}" 
+														data-expirationminutes="5" 
+														data-timeouturl="{{ data.timeoutUrl }}" 
+														data-usertoken="" 
+														data-documenttype="" 
+														data-documentid="" 
+														data-beneficiaryid="" 
+														data-productid="" 
+														data-phone=""
+													/>
+													</script>
+												</form>
+											{% else %}
+											<div class="alert alert-info">
+												Estimado usuario, este servicio esta fallando temporalmente. Por favor selecciona otro medio de pago o intenta nuevamente.
+												<br>
+												<strong><a href="javascript:void(0);" onclick="window.location.reload();" >Clic aqui para intentar nuevamente</a></strong>
+											</div>
+											{% endif %}
+											<a href="{{ data.timeoutUrl }}" type="button" class="btn btn-danger mt-2" style="width: 223px !important; margin: auto; padding-top: 9px; padding-bottom: 9px; border-radius: 4px;">
+												REGRESAR
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="container-fluid">
+				<section class="section__tarjetas" howu-index="756">
+					<div class="site-block section__tarjetas__content" howu-index="755">
+						<div class="tarjetas__tittle" howu-index="754">
+							<h2 howu-index="753">Las aceptamos todas <strong style="color:#FFC107;" howu-index="752">.</strong></h2>
+							<p class="tarjetas__p__interioru" howu-index="751">Trabajamos con todos los medios de pago.</p>
+						</div>
+						<div class="tarjetas__imgs" howu-index="750">
+							<img src="https://www.niubiz.com.pe/wp-content/themes/visanet/assets/img/tarjetavisa.png" alt="Pago con Visa" howu-index="749">
+							<img src="https://www.niubiz.com.pe/wp-content/themes/visanet/assets/img/mastercard.png" alt="Pago con Mastercard" howu-index="748">
+							<img src="https://www.niubiz.com.pe/wp-content/themes/visanet/assets/img/american_express.png" alt="Pago con American Express" howu-index="747">
+							<img src="https://www.niubiz.com.pe/wp-content/themes/visanet/assets/img/diners_club.png" alt="Pago con Diners Club" howu-index="746">
+							<img src="https://www.niubiz.com.pe/wp-content/themes/visanet/assets/img/union_pay.png" alt="Pago con union pay" howu-index="745">
+							<img src="https://www.niubiz.com.pe/wp-content/themes/visanet/assets/img/yape.png" alt="Pago con yape" howu-index="744">
+							<img src="https://www.niubiz.com.pe/wp-content/themes/visanet/assets/img/plin.png" alt="Pago con plin" howu-index="743">
+							<p howu-index="742">Y muchos mas</p>
+						</div>
+					</div>
+				</section>
+			</div>
+			{% else %}
+				<div class="container-fluid">
+					<div class="alert alert-danger" role="alert">
+						<strong>Error: </strong> {{ message }}
+					</div>				
+				</div>
+			{% endif %}
+		</main>
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js" integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous"></script>
+	</body>
+</html>

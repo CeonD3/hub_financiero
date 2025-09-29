@@ -1,0 +1,124 @@
+{% extends "admin/layouts/main.twig" %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-column-fluid">
+    <!--begin::Toolbar-->
+    <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+        <!--begin::Toolbar container-->
+        <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
+            <!--begin::Page title-->
+            <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                <!--begin::Title-->
+                <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">GESTIÓN DE REPORTES DE VALORA</h1>
+                <!--end::Title-->
+                <!--begin::Breadcrumb-->
+                <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-muted">
+                        <a href="/admin" class="text-muted text-hover-primary">Home</a>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item">
+                        <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-muted">Reportes Valora</li>
+                    <!--end::Item-->
+                </ul>
+                <!--end::Breadcrumb-->
+            </div>
+            <!--end::Page title-->
+            <!--begin::Actions-->
+            <div class="d-flex align-items-center gap-2 gap-lg-3">
+                <!--begin::Primary button-->
+                <!--end::Primary button-->
+            </div>
+            <!--end::Actions-->
+        </div>
+        <!--end::Toolbar container-->
+    </div>
+    <!--end::Toolbar-->
+    <!--begin::Content-->
+    <div id="kt_app_content" class="app-content flex-column-fluid">
+        <!--begin::Content container-->
+        <div id="AppListDesignAdmin" class="app-container container-fluid">
+            <div class="row gx-5 gx-xl-10">
+                <!--begin::Col-->
+                <div class="col-sm-12 col-xl-12">
+                    <div class="card">
+                        <div class="card-body">
+                           
+                            <div class="row">
+                                <div class="col-md-12 mb-5">
+                                    <h4 class="d-inline">LISTA DE DISEÑOS</h4>
+                                    <a href="/admin/valora/reportes/crear" type="button" class="btn btn-primary float-end">
+                                        <i class="fa fa-plus mr-2" aria-hidden="true"></i> Nuevo
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 mb-4">
+                                    <div class="table-responsive">
+                                        <table class="table hover" id="table-design" width="100%" cellpadding="2" cellspacing="0" border="0" >
+                                            <thead>
+                                                <tr>
+                                                    <th>N°</th>
+                                                    <th>Portada</th>
+                                                    <th>Reporte</th>
+                                                    <th>Precio</th>
+                                                    <th>Fecha</th>
+                                                    <th>Estado</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for index, item in data.designs %}
+                                                <tr>
+                                                    <td>{{ item.id }}</td>
+                                                    <td><img src="{{ item.image ? APP.API_URL_FINANCE ~ item.image : APP.API_URL_FINANCE ~ '/assets/image/notfound.png' }}" class="border" style="height: 60px;width:50px;"/></td>
+                                                    <td>{{ item.name }}</td>
+                                                    <td>{{ item.currency }} {{ item.price ? item.price : '0.00'  }}</td>
+                                                    <td>{{ item.created_at }}</td>
+                                                    <td>
+                                                        {% if item.status == 1 %}
+                                                            <span class="badge badge-success bge">Activado</span>
+                                                        {% else %} 
+                                                            <span class="badge badge-secondary bge">Desactivado</span>              
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <a href="/admin/valora/reportes/{{ item.id }}/editar" type="button" class="btn btn-outline-secondary btn-sm mr-2">
+                                                            <i class="fa fa-edit" aria-hidden="true"></i>
+                                                        </a>
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm btn-delete" data-id="{{ item.id }}">
+                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end::Content-->
+</div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="/assets/admin/js/design.js"></script>
+{% endblock %}

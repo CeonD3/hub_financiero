@@ -1,0 +1,184 @@
+{% set titulo = [] %}
+{% set kapital = [] %}
+{% set valora = [] %}
+{% for item in industria %}
+	{% if item.content_alias == 'tituloinf' %}
+		{% set titulo = titulo|merge([item]) %}
+	{% endif %}
+	{% if item.content_alias == 'kapital' %}
+		{% set kapital = kapital|merge([item]) %}
+	{% endif %}
+	{% if item.content_alias == 'valora' %}
+		{% set valora = valora|merge([item]) %}
+	{% endif %}
+{% endfor %}
+<!--begin::Team Section-->
+<div
+	class="bs-landing-section bs-section-1" id="beneficios">
+	<!--begin::Container-->
+	<div class="container">
+		<div class="justify-content-center row">
+			<div class="col-lg-8">
+				<div class="text-center mb-7">
+					<h3 class="fw-bold mb-3 fs-1">{{ titulo[0].content_name }}</h3>
+					<p class="opacity-50 fs-3">{{ titulo[0].content_caption }}</p>
+				</div>
+				<div class="card">
+					<div class="card-body table-loading" id="ModuleGraphIndustryWeb">
+						<div class="table-loading-message" v-if="loading">
+							Cargando...
+						</div>
+						<div class="row">
+							<div class="col-lg-6 mb-3">
+								<select class="form-select" v-model="industry" @change="onIndustry">
+									<option value="" hidden selected>SELECCIONE</option>
+									<option v-for="(item,index) in industries" :value="item" v-text="item"></option>
+								</select>
+							</div>
+							<div class="col-lg-6 mb-3 d-flex">
+								<select class="form-select me-5" v-model="year" @change="onYear">
+									<option value="" hidden selected>SELECCIONE</option>
+									<option v-for="(item,index) in years" :value="item.year" v-text="item.year"></option>
+								</select>
+								<button type="button" class="btn btn-outline py-1 px-3 me-5" @click="onUpdown">
+									<i class="fa-solid fa-arrow-down-1-9 fs-3" v-if="updown"></i>
+									<i class="fa-solid fa-arrow-up-1-9 fs-3" v-else></i>
+								</button>
+								<button type="button" class="btn btn-outline py-1 px-3" @click="onZoom">
+									<i class="fa-solid fa-up-right-and-down-left-from-center fs-3"></i>
+								</button>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-12">
+								<div id="chartdiv" style="width: 100%;height: 420px;"></div>
+							</div>
+						</div>
+						<div class="modal fade" tabindex="-1" id="modalIndustry">
+							<div class="modal-dialog modal-dialog-centered modal-fullscreen">
+								<div class="modal-content">
+									<div
+										class="modal-header">
+										{# <h3 class="modal-title">¿Que tan riesgosa es su industría?</h3>
+																																																												                                        <small>Revise el riesgo en el que encuentra su empresa</small> #}
+										<div>
+											<h3 class="fw-bold mb-1 fs-1">¿Que tan riesgosa es su industria?</h3>
+											<p class="opacity-50 fs-3 mb-0">Revise el riesgo en el que se encuentra su empresa</p>
+										</div>
+										<!--begin::Close-->
+										<div class="btn btn-icon btn-sm btn-active-light-primary ms-2" data-bs-dismiss="modal" aria-label="Close">
+											<i class="fa-solid fa-xmark fs-2"></i>
+										</div>
+										<!--end::Close-->
+									</div>
+									<div class="modal-body table-loading">
+										<div class="row">
+											<div class="table-loading-message" v-if="loading">
+												Cargando...
+											</div>
+											<div class="row">
+												<div class="col-lg-8">
+													<div class="row">
+														<div class="col-lg-8 mb-3">
+															<select class="form-select" v-model="industry" @change="onIndustry">
+																<option value="" hidden selected>SELECCIONE</option>
+																<option v-for="(item,index) in industries" :value="item" v-text="item"></option>
+															</select>
+														</div>
+														<div class="col-lg-4 mb-3 d-flex">
+															<select class="form-select me-5" v-model="year" @change="onYear">
+																<option value="" hidden selected>SELECCIONE</option>
+																<option v-for="(item,index) in years" :value="item.year" v-text="item.year"></option>
+															</select>
+															<button type="button" class="btn btn-outline py-1 px-3" @click="onUpdown">
+																<i class="fa-solid fa-arrow-down-1-9 fs-3" v-if="updown"></i>
+																<i class="fa-solid fa-arrow-up-1-9 fs-3" v-else></i>
+															</button>
+														</div>
+													</div>
+												</div>
+												<div class="col-lg-4">
+													<h3 class="opacity-50 fs-3">Costo economíco de la industría seleccionada</h3>
+													<div class="d-flex my-auto">
+														<h1 class="me-3" v-text="industrySelected.value + '%'"></h1>
+														<h3 class="text-primary mt-1" v-text="industrySelected.label"></h3>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-lg-12">
+												<div id="chartdiv2" style="width: 100%;height: 620px;"></div>
+											</div>
+										</div>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{# <div
+													class="col-lg-4">
+													<!--begin::Accordion-->
+													<div class="accordion bs-accordion-1 mt-13" id="kt_accordion_1">
+														<div class="accordion-title">
+															<div class="bg-light-success">
+																<i class="fa-solid fa-user-group"></i>
+																COSTO CAPITAL</div>
+														</div>
+									
+														{% for i,item in kapital %}
+															<div class="accordion-item">
+																<h2 class="accordion-header" id="kt_accordion_1_header_{{item.id}}">
+																	<button class="accordion-button fs-4 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#kt_accordion_1_body_{{item.id}}" aria-expanded="true" aria-controls="kt_accordion_1_body_{{item.id}}">
+																		<i class="fa-solid fa-location-dot"></i>
+																		{{ item.content_name }}
+																	</button>
+																</h2>
+																<div id="kt_accordion_1_body_{{item.id}}" class="accordion-collapse collapse {{ i==0?'show':''}}" aria-labelledby="kt_accordion_1_header_{{item.id}}" data-bs-parent="#kt_accordion_1">
+																	<div class="accordion-body">
+																		{{ item.content_description }}
+																		{% if item.content_url %}
+																			<br/><br/><a href="{{ item.content_url }}">Ir a la plataforma</a>
+																		{% endif %}
+																	</div>
+																</div>
+															</div>
+														{% endfor %}
+														<div class="accordion-title">
+															<div>
+																<i class="fa-regular fa-eye"></i>
+																VALORA</div>
+														</div>
+									
+														{% for i,item in valora %}
+															<div class="accordion-item">
+																<h2 class="accordion-header" id="kt_accordion_1_header_{{item.id}}">
+																	<button class="accordion-button fs-4 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#kt_accordion_1_body_{{item.id}}" aria-expanded="true" aria-controls="kt_accordion_1_body_{{item.id}}">
+																		<i class="fa-solid fa-location-dot"></i>
+																		{{ item.content_name }}
+																	</button>
+																</h2>
+																<div id="kt_accordion_1_body_{{item.id}}" class="accordion-collapse collapse" aria-labelledby="kt_accordion_1_header_{{item.id}}" data-bs-parent="#kt_accordion_1">
+																	<div class="accordion-body">
+																		{{ item.content_description }}
+																		{% if item.content_url %}
+																			<br/><br/><a href="{{ item.content_url }}">Ir a la plataforma</a>
+																		{% endif %}
+																	</div>
+																</div>
+															</div>
+														{% endfor %}
+													</div>
+													<!--end::Accordion-->
+									
+												</div> #}
+		</div>
+	</div>
+	<!--end::Container-->
+</div>
+<!--end::Team Section-->

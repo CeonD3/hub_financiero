@@ -1,0 +1,40 @@
+{% extends "web/landing/layouts/main.twig" %}
+
+{% block styles %}{% endblock %}
+
+{% block content %}
+	{% set principal = [] %}
+	{% set clientes = [] %}
+	{% set industria = [] %}
+	{% set servicios = [] %}
+	{% set equipo = [] %}
+	{% for item in data.contents %}
+		{% if item.alias == 'principal' %}
+			{%set principal = item.contents%}
+		{% endif %}
+		{% if item.alias == 'clientes' %}
+			{%set clientes = item.contents%}
+		{% endif %}
+		{% if item.alias == 'industria' %}
+			{%set industria = item.contents%}
+		{% endif %}
+		{% if item.alias == 'servicios' %}
+			{%set servicios = item.contents%}
+		{% endif %}
+		{% if item.alias == 'equipo' %}
+			{%set equipo = item.contents%}
+		{% endif %}
+	{% endfor %}
+
+	{% include "web/landing/partials/platform.twig" %}
+	{% include "web/landing/partials/benefit.twig" %}
+	{% include "web/landing/partials/product.twig" %}
+	{% include "web/landing/partials/team.twig" %}
+	{% include "web/landing/partials/contact.twig" %}
+{% endblock %}
+
+{% block drawers %}
+	{% include "web/landing/partials/glossary.twig" %}
+{% endblock %}
+
+{% block scripts %}{% endblock %}

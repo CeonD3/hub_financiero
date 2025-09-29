@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Redireccionando..</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    </head>
+
+    <body>
+    <header>
+        <!-- place navbar here -->
+    </header>
+    <main>
+        {% if success %}
+        <h1>PROCESANDO SU PAGO....</h1>
+        <div class="container">
+            {% if data.payment.redirectUrl %}
+            <form method="GET" id="redirection" role="form" action="{{ data.payment.redirectUrl }}">
+                {# <input type="hidden" name="eid" value="{{ data.payment.id }}">
+                <input type="hidden" name="status" value="{{ data.payment.status }}">
+                <input type="hidden" name="saleId" value="{{ data.payment.saleId }}"> #}
+            </form>
+            {% endif %}
+        </div>
+        {% else %}
+            {{ message }}
+        {% endif %}
+    </main>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', ()=>{
+            const redirection = document.getElementById('redirection');
+            if (redirection) {
+                redirection.submit();
+            }
+        });
+    </script>
+</body>
+
+</html>

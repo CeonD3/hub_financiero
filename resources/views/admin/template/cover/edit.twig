@@ -1,0 +1,523 @@
+{% extends "admin/layouts/main.twig" %}
+
+{% block style %}
+<style>
+
+
+.portada-container {
+    /* AJUSTA ESTAS DIMENSIONES A LAS DE TU IMAGEN ORIGINAL */
+    width: 800px;
+    height: 1130px;
+    position: relative;
+    /* La imagen de fondo se aplicará aquí vía JS y contendrá las formas de color */
+    background-color: #ffffff; /* Color base si no hay imagen de fondo */
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    border: 1px solid #ccc;
+}
+
+/* Ya no se necesitan .forma-fondo-azul-oscura y .forma-fondo-azul-media */
+
+/* Logo Superior */
+.logo-superior-container {
+    position: absolute;
+    top: 35px;
+    right: 40px;
+    width: 180px;
+    height: 50px;
+    z-index: 10; /* Debe estar sobre la imagen de fondo y otros elementos si es necesario */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#logo-superior {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Texto Lateral "Kapitals.org" */
+.texto-lateral-container {
+    position: absolute;
+    top: 520px;
+    left: 30px; /* Ajustar para que se alinee con la franja en la imagen de fondo */
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    color: white; /* Asumiendo que la franja en la imagen de fondo es oscura */
+    padding: 8px 0px;
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-align: center;
+    width: 250px; /* Ancho del texto rotado */
+    z-index: 5; /* Sobre la imagen de fondo */
+}
+#texto-lateral {
+    margin: 0;
+    display: inline-block;
+}
+
+/* Imagen Central */
+.imagen-central-container {
+    position: absolute;
+    top: 85px;
+    left: 100px;
+    width: 450px;
+    height: 510px;
+    z-index: 3; /* Sobre la imagen de fondo */
+    background-color: #ddd; /* Placeholder si no hay imagen */
+    overflow: hidden;
+}
+#imagen-central {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Bloque de Texto para "Costo de Kapital" (antes aguamarina) */
+.texto-flotante-container {
+    position: absolute;
+    top: 372px;   /* Mide y ajusta para el área de texto en tu imagen de fondo */
+    left: 448px;  /* Mide y ajusta para el área de texto en tu imagen de fondo */
+    width: 330px;  /* Ancho del área de texto en tu imagen de fondo */
+    height: 134px; /* Alto del área de texto en tu imagen de fondo */
+    /*background-color: #7FFFD4; /* Ya no necesita color propio */
+    padding: 20px; /* Padding para el texto dentro del área definida */
+    z-index: 4; /* Sobre la imagen de fondo */
+    box-sizing: border-box;
+    display: flex;
+    align-items: center; /* Centrar verticalmente el texto dentro de este contenedor */
+    /* justify-content: center; Si quieres centrar horizontalmente también */
+}
+#titulo-principal {
+    font-size: 28px; /* Ajusta el tamaño */
+    color: #1e2a4c;  /* Color del texto (debe ser legible sobre el fondo aguamarina de la imagen) */
+    margin: 0;
+    font-weight: bold;
+    width: 100%;
+    /* text-align: center; Si el texto debe estar centrado dentro del área */
+}
+
+/* Colaboración y Logo Inferior */
+.colaboracion-container {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10; /* Sobre la imagen de fondo */
+    width: 280px;
+}
+#texto-colaboracion {
+    font-size: 16px;
+    color: #555; /* Ajusta según la legibilidad sobre la imagen de fondo */
+    margin-bottom: 10px;
+}
+.logo-inferior-wrapper {
+    width: 220px;
+    height: 90px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#logo-inferior {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* Controles de Edición (sin cambios) */
+.controles {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 800px;
+    box-sizing: border-box;
+}
+.controles h2 { margin-top: 0; }
+.controles label { display: inline-block; margin-bottom: 5px; width: 200px; }
+.controles input[type="file"], .controles input[type="text"] { margin-bottom: 15px; }
+.controles button {
+    padding: 10px 15px; background-color: #007bff; color: white;
+    border: none; border-radius: 4px; cursor: pointer;
+}
+.controles button:hover { background-color: #0056b3; }
+
+[contenteditable="true"] { outline: 1px dashed #ccc; cursor: text; }
+[contenteditable="true"]:focus { outline: 2px solid #007bff; }
+</style>
+<style>
+    .container-cover-view {
+        justify-content: center;
+        display: flex;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-column-fluid">
+    <!--begin::Toolbar-->
+    <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+        <!--begin::Toolbar container-->
+        <div id="kt_app_toolbar_container" class="app-container container d-flex flex-stack">
+            <!--begin::Page title-->
+            <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+                <!--begin::Title-->
+                <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Edición de portada</h1>
+                <!--end::Title-->
+                <!--begin::Breadcrumb-->
+                <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-muted">
+                        <a href="/admin" class="text-muted text-hover-primary">Home</a>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item">
+                        <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                    </li>
+                    <!--end::Item-->
+                    <!--begin::Item-->
+                    <li class="breadcrumb-item text-muted">Portadas</li>
+                    <!--end::Item-->
+                </ul>
+                <!--end::Breadcrumb-->
+            </div>
+            <!--end::Page title-->
+            <!--begin::Actions-->
+            <div class="d-flex align-items-center gap-2 gap-lg-3">
+                <!--begin::Primary button-->
+                <!--end::Primary button-->
+            </div>
+            <!--end::Actions-->
+        </div>
+        <!--end::Toolbar container-->
+    </div>
+    <!--end::Toolbar-->
+    <!--begin::Content-->
+    <div id="kt_app_content" class="app-content flex-column-fluid">
+
+        <div id="AppAdminTemplate" class="app-container container">
+            <div class="row gx-5 gx-xl-10">
+                <!--begin::Col-->
+                <div class="col-sm-12 col-xl-12">
+                    <div class="card">
+                     <div class="card-header">
+                        <div class="card-title">
+                                <h2 class="fw-bolder mb-2">Portada</h2>
+                            </div>
+                            <div class="card-toolbar">
+                                <button type="submit" class="btn btn-primary" form="formCover">
+                                    Guardar
+                                </button>
+                                
+                                <!--begin::Button-->
+                                <a href="/admin/master/portadas" class="btn btn-secondary ms-2">
+                                    Regresar
+                                </a>
+                                <!--end::Button-->
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form id="formCover">
+                                <input type="hidden" name="cover_id" value="{{data.cover.id}}">
+                                <div class="row mb-7">
+                                    <label class="form-label col-lg-3">
+                                        Acciones
+                                    </label>
+                                    <div class="col-lg-9">
+                                        <div class="form-check">
+                                            <label class="form-check-label">
+                                                <input type="checkbox" class="form-check-input" name="show_text_report"  value="1" {{data.cover.show_text_report == 1 ? 'checked' : ''}}>
+                                                Mostrar Texto del reporte
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-7">
+                                    <label class="form-label col-lg-3">
+                                        Tipo de Portada
+                                    </label>
+                                    <div class="col-lg-9">
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input form-radio-type" type="radio" name="type_id" value="1" {{(data.cover.type_id == 1 or data.cover is null) ? 'checked' : ''}}> Imagen Adjuntada
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input form-radio-type" type="radio" name="type_id" value="2" {{data.cover.type_id == 2 ? 'checked' : ''}}> Personalizada
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-7">
+                                    <label class="form-label col-lg-3">
+                                        Nombre
+                                    </label>
+                                    <div class="col-lg-9">
+                                        <input type="text" name="name" class="form-control" placeholder="" value="{{data.cover.name}}" required>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-7">
+                                    <label class="form-label col-lg-3">
+                                        Primer Imagen Footer
+                                    </label>
+                                    <div class="col-lg-9">
+                                        <input type="file" name="footer_file_one" class="form-control mb-3" placeholder="">
+                                        {% if data.cover.footer_file_one %}
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="footer_file_one_remove_label" name="footer_file_one_remove" value="1" />
+                                            <label class="form-check-label" for="footer_file_one_remove_label">Eliminar imagen</label>
+                                        </div>                                        
+                                        <img src="{{APP.API_URL_FINANCE}}{{data.cover.footer_file_one}}" height="100" class="border" />
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-7">
+                                    <label class="form-label col-lg-3">
+                                        Segundo Imagen Footer
+                                    </label>
+                                    <div class="col-lg-9">
+                                        <input type="file" name="footer_file_two" class="form-control mb-3" placeholder="">
+                                        {% if data.cover.footer_file_two %}
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" id="footer_file_two_remove_label" name="footer_file_two_remove" value="1" />
+                                            <label class="form-check-label" for="footer_file_two_remove_label">Eliminar imagen</label>
+                                        </div>
+                                        <img src="{{APP.API_URL_FINANCE}}{{data.cover.footer_file_two}}" height="100" class="border" />
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="container-attachment" style="display: {{(data.cover.type_id == 1 or data.cover is null) ? 'block' : 'none'}}">
+                                    <div class="row mb-7">
+                                        <label class="form-label col-lg-3">
+                                            Portada
+                                        </label>
+                                        <div class="col-lg-9">
+                                            <input type="file" name="attachment" class="form-control" placeholder="">
+                                        </div>
+                                    </div>
+                                    {% if data.cover.file  and data.cover.type_id == 1 %}                                    
+                                        <div class="row">
+                                            <label class="form-label col-lg-3">
+                                                Imagen
+                                            </label>
+                                            <div class="col-lg-9">
+                                                <img src="{{APP.API_URL_FINANCE}}{{data.cover.file}}" class="border" />
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="container-customized" style="display: {{(data.cover.type_id == 2) ? 'block' : 'none'}}">
+                                    <div class="row">
+                                        <label class="form-label col-lg-3">
+                                            Ajuntar Imagen
+                                        </label>
+                                        <div class="col-lg-9 container-cover-view">
+                                            <div class="row">
+                                                <div class="col-lg-12 mb-5">
+                                                    <div class="controles">
+                                                        <h2>Controles de Edición</h2>
+                                                        <label for="input-logo-superior">Logo Superior:</label>
+                                                        <input type="file" id="input-logo-superior" name="image_top" accept="image/*"><br><br>
+                                                        <label for="input-imagen-central">Imagen Central:</label>
+                                                        <input type="file" id="input-imagen-central" name="image_center" accept="image/*"><br><br>
+                                                        <label for="input-logo-inferior">Logo Inferior:</label>
+                                                        <input type="file" id="input-logo-inferior" name="image_bottom" accept="image/*"><br><br>
+                                                        <label for="input-imagen-fondo">Imagen de Fondo (completa):</label>
+                                                        <input type="file" id="input-imagen-fondo" name="image_background" accept="image/*"><br><br>
+                                                        {# <button type="button" id="generar-imagen">Generar Imagen</button> #}
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12">                                                
+                                                    <div id="portada-container" class="portada-container" style="background-image: url('{{data.cover.image ? data.cover.image : (APP.API_URL_FINANCE ~ data.file)}}')">
+                                                        <div class="logo-superior-container" style="display: none;">
+                                                            <img id="logo-superior" src="{{APP.API_URL_FINANCE}}{{data.cover.image_top}}" alt="Logo Superior">
+                                                        </div>
+
+                                                        <div class="texto-lateral-container" style="min-width: 100px;">
+                                                            <p id="texto-lateral" contenteditable="true" style="min-width: 100px;"></p>
+                                                        </div>
+
+                                                        <div class="imagen-central-container" style="display: none;">
+                                                            <img id="imagen-central" src="{{APP.API_URL_FINANCE}}{{data.cover.image_center}}" alt="Imagen Central">
+                                                        </div>
+
+                                                        <div class="texto-flotante-container" style="display: none;">
+                                                            <h1></h1>
+                                                        </div>
+
+                                                        <div class="colaboracion-container">
+                                                            <p id="texto-colaboracion" contenteditable="true"></p>
+                                                            <div class="logo-inferior-wrapper" style="display: none;">
+                                                                <img id="logo-inferior" src="{{APP.API_URL_FINANCE}}{{data.cover.image_bottom}}" alt="Logo Inferior">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+
+                            
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const portadaContainer = document.getElementById('portada-container');
+    const logoSuperior = document.getElementById('logo-superior');
+    const inputLogoSuperior = document.getElementById('input-logo-superior');
+    const imagenCentral = document.getElementById('imagen-central');
+    const inputImagenCentral = document.getElementById('input-imagen-central');
+    const logoInferior = document.getElementById('logo-inferior');
+    const inputLogoInferior = document.getElementById('input-logo-inferior');
+    const inputImagenFondo = document.getElementById('input-imagen-fondo');
+    const generarImagenBtn = document.getElementById('generar-imagen');
+    const formRadioTypes = document.getElementsByClassName('form-radio-type');
+    const containerAttachments = document.getElementsByClassName('container-attachment');
+    const containerCustomizeds = document.getElementsByClassName('container-customized');
+    const formCover = document.getElementById('formCover');
+
+    formRadioTypes.forEach(formRadio => {
+        formRadio.addEventListener('input', () => {
+            const selectedType = formRadio.value;
+            containerAttachments.forEach(container => {
+                container.style.display = selectedType == 1 ? 'block' : 'none';
+            });
+            containerCustomizeds.forEach(container => {
+                container.style.display = selectedType == 2 ? 'block' : 'none';
+            });
+        });
+    });
+    function previsualizarImagen(input, imgElement, esFondo = false, elementoFondo = null) {
+        input.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (esFondo && elementoFondo) {
+                        elementoFondo.style.backgroundImage = `url(${e.target.result})`;
+                        elementoFondo.style.backgroundColor = 'transparent'; // Para asegurar que el color no interfiera
+                    } else if (imgElement) {
+                        imgElement.src = e.target.result;
+                        // imgElement.style.display = 'block';
+                        imgElement.parentElement.style.display = 'block';
+                    }
+                }
+                reader.readAsDataURL(file);
+            } else {
+                // imgElement.style.display = 'none';
+                imgElement.parentElement.style.display = 'none';
+            }
+        });
+    }
+
+    previsualizarImagen(inputLogoSuperior, logoSuperior);
+    previsualizarImagen(inputImagenCentral, imagenCentral);
+    previsualizarImagen(inputLogoInferior, logoInferior);
+    previsualizarImagen(inputImagenFondo, null, true, portadaContainer); // Correcto para el fondo completo
+
+    function fetchSave (formData) {
+        helper.post(`{{APP.API_URL_FINANCE}}/api/admin/master/covers/save`, formData)
+        .then(({success, message, data}) => {
+            if (!success) {
+                throw message;
+            }
+            console.log('Imagen generada con éxito:', data.cover_id);
+            sweet2.success({html: message});
+            setTimeout(() => {
+                sweet2.loading();
+                window.location.href = `/admin/master/portadas/${data.cover_id}/edit`;
+            }, 2000);
+        })
+        .catch(error => {
+            console.error('Error al actualizar la imagen:', error);
+            sweet2.error({html: error});
+        });
+    }
+
+    //generarImagenBtn.addEventListener('click', function() {
+    formCover.addEventListener('submit', function(event) {
+        event.preventDefault(); // Evita que el formulario se envíe automáticamente
+
+        sweet2.question({
+            title: `¿Estás seguro de que deseas generar la imagen?`,
+            onOk: () => {
+                sweet2.loading();
+
+
+                const formData = new FormData(event.target);
+                const type_id = formData.get('type_id');
+                
+                if (Number(type_id) === 1) {
+                        fetchSave(formData);
+                } else {
+                    const editables = portadaContainer.querySelectorAll('[contenteditable="true"]');
+                    editables.forEach(el => el.style.outline = 'none');
+
+                    const originalBorder = portadaContainer.style.border;
+                    portadaContainer.style.border = 'none';
+
+                    html2canvas(portadaContainer, {
+                        allowTaint: true,
+                        useCORS: true,
+                        scale: 2,
+                        backgroundColor: null,
+                    }).then(canvas => {
+                        editables.forEach(el => el.style.outline = '');
+                        portadaContainer.style.border = originalBorder;
+                        const imageDataURL = canvas.toDataURL('image/png');
+                        // console.log(imageDataURL)
+                        formData.append('side_text', document.getElementById('texto-lateral').value);
+                        formData.append('image', imageDataURL);
+                        formData.append('collaboration_text', document.getElementById('texto-colaboracion').value);
+
+                        fetchSave(formData);
+                    
+                        /*const link = document.createElement('a');
+                        link.href = imageDataURL;
+                        link.download = 'portada-generada.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);*/
+                    }).catch(error => {
+                        console.error('Error al generar la imagen:', error);
+                        editables.forEach(el => el.style.outline = '');
+                        portadaContainer.style.border = originalBorder;
+                    });
+                }
+
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

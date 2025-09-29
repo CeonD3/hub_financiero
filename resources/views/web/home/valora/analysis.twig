@@ -1,0 +1,182 @@
+{% extends "web/home/valora/layouts/main.twig" %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block navbar %}
+    {% include "web/home/valora/layouts/partials/navbar.twig" with { 'selected': 'analysis' } %}
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column flex-column-fluid mt-5">
+    <!--begin::Content-->
+    <div id="AppAnalysisValoraWeb" uid="{{ data.uid }}" class="app-content flex-column-fluid mb-0">
+        <!--begin::Content container-->
+        {# <div id="kt_app_content_container" class="app-container container-xxl"> #}
+        <div id="kt_app_content_container" class="container">
+            <div class="col-lg-12 table-loading mt-3" v-show="loading">
+                <div class="table-loading-message" v-if="loading">
+                    Cargando...
+                </div>
+            </div>
+            <!--begin::Row-->
+            <div class="row" style="display:none;" v-show="!loading">
+                <div class="col-lg-12">
+                    <form id="formAnalysisValora" @submit="onFormAnalysisValora">
+                        <div class="row">
+                            <div class="col">
+                                <div class="card shadow-sm mb-5">
+                                    <div class="card-body bg-secondary">
+                                        <div class="my-auto" style="min-width: 250px;">
+                                            <label class="form-label" style="height: 37px; overflow-y: hidden;">Tasa de crecimiento de largo plazo (g)</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" name="longgrowth" class="form-control text-center" :value="general?.longgrowth" required>
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card shadow-sm mb-5">
+                                    <div class="card-body bg-secondary">
+                                        <div class="my-auto" style="min-width: 250px;">
+                                            <label class="form-label" style="height: 37px; overflow-y: hidden;">Costo de Capital (CPPC/WACC)</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" name="capitalcost" class="form-control text-center" :value="general?.capitalcost" required>
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card shadow-sm mb-5">
+                                    <div class="card-body bg-secondary">
+                                        <div class="my-auto" style="min-width: 250px;">
+                                            <label class="form-label float-start" style="height: 37px; overflow-y: hidden;">Tasa de crecimiento de los ingresos <i class="fa-solid fa-circle-info fs-5 float-end mt-1 ms-2"  data-bs-toggle="tooltip" data-bs-placement="right" data-bs-dismiss="click" title="{{ cont_analisis[0].content_name }}{#Defina la tasa de crecimiento de los ingresos para el primer año de proyección. La tasa por defecto es la recomendada por la plataforma.#}"></i></label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" name="revenuegrowth" class="form-control text-center" :value="general?.revenuegrowth" required>
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-12 text-end mb-7">
+                    <button type="submit" class="btn btn-primary" form="formAnalysisValora">Guardar</button>
+                </div>
+            </div>
+            <div class="row" style="display:none;" v-show="!loading">
+                <div class="col-lg-12">
+                    <div class="card shadow-sm mb-5">
+                        <div class="card-header bg-light py-4">
+                            <div class="container my-auto">
+                                <div class="row">
+                                    <div class="col">
+                                        <i class="fa-solid fa-chart-pie fs-1"></i>
+                                    </div>
+                                    <div class="col text-center">
+                                        <h3>MÉTODO POR CONCEPTOS</h3>
+                                    </div>
+                                    <div class="col text-end">
+                                        <i class="fa-solid fa-circle-info fs-1" title="{{ cont_analisis[1].content_name }}"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <ul class="list-group list-group-flush mb-10">
+                                        <li class="list-group-item py-5">
+                                            <div class="row">
+                                                <div class="col"><h4>VALOR DEL PATRIMONIO</h4></div>
+                                                <div class="col text-end"><h3 class="text-success" v-text="concept.patrimony">0</h3></div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item py-5">
+                                            <div class="row">
+                                                <div class="col"><h4>VALOR POR ACCIÓN</h4></div>
+                                                <div class="col text-end"><h3 class="text-primary" v-text="concept.action">0</h3></div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col text-left">  
+                                    <h3 class="mb-5">Balance General Contable</h3>
+                                    <div style="overflow-x: auto;overflow-y: hidden;">
+                                        <div class="mb-2" id="bsGroup1" style="height:250px;width:600px;margin: auto;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card shadow-sm mb-5">
+                        <div class="card-header bg-light">
+                            <div class="container my-auto">
+                                <div class="row">
+                                    <div class="col">
+                                        <i class="fa-solid fa-chart-simple fs-1"></i>
+                                    </div>
+                                    <div class="col text-center">
+                                        <h3>MÉTODO INTEGRADO</h3>
+                                    </div>
+                                    <div class="col text-end">
+                                        <i class="fa-solid fa-circle-info fs-1" title="{{ cont_analisis[2].content_name }}"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col">
+                                    <ul class="list-group list-group-flush mb-10">
+                                        <li class="list-group-item py-5">
+                                            <div class="row">
+                                                <div class="col"><h4>VALOR DEL PATRIMONIO</h4></div>
+                                                <div class="col text-end"><h3 class="text-success" v-text="integrated.patrimony">0</h3></div>
+                                            </div>
+                                        </li>
+                                        <li class="list-group-item py-5">
+                                            <div class="row">
+                                                <div class="col"><h4>VALOR POR ACCIÓN</h4></div>
+                                                <div class="col text-end"><h3 class="text-primary" v-text="integrated.action">0</h3></div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col text-left">  
+                                    <h3 class="mb-5">Balance General Contable</h3>
+                                    <div style="overflow-x: auto;overflow-y: hidden;">
+                                        <div class="mb-2" id="bsGroup2" style="height:250px;width:600px;margin: auto;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Content container-->
+    </div>
+    <!--end::Content-->
+</div>
+
+{% endblock %}
+
+
+{% block script %}
+    <script src="/assets/web/js/analysisValora.js"></script>
+    <script>
+        document.getElementById('kt_body').setAttribute('data-kt-aside-minimize','on');
+        document.getElementById('kt_aside_toggle').remove();
+        document.getElementById('kt_aside_item_projects').remove();
+    </script>
+{% endblock %}

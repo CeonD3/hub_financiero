@@ -1,0 +1,76 @@
+{% extends "web/home/valora/layouts/main.twig" %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block navbar %}
+    {% include "web/home/valora/layouts/partials/navbar.twig" with { 'selected': 'financial' } %}
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex flex-column flex-column-fluid mt-5">
+    <!--begin::Content-->
+    <div id="AppFinancialValora" class="app-content flex-column-fluid mb-0" uid="{{ data.uid }}">
+        <!--begin::Content container-->
+        {# <div id="kt_app_content_container" class="app-container container-xxl"> #}
+        <div id="kt_app_content_container" class="container">
+            <!--begin::Row-->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card shadow-sm mb-5">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col mb-7 d-flex">
+                                    <ul class="nav nav-pills float-end" id="pills-tab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link fs-6 active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true" @click="onModule(1)">
+                                                Estado de Situación Financiera
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link fs-6" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false" @click="onModule(2)">
+                                                Estado de Resultados
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col mb-7">
+                                     <button type="button" class="btn btn-sm btn-primary float-end" data-bs-toggle="modal" data-bs-target="#modalFileUsername"><i class="fa-solid fa-file-import"></i> Subir Archivo</button>
+                                </div>
+                            </div>
+                            <div class="table-responsive table-loading">
+                                <div class="table-loading-message" v-if="loading">
+                                    Cargando...
+                                </div>
+                                <table class="table table-bordered cell-border table-hover g-4">
+                                    <thead class="text-center">
+                                        <tr class="fw-bold fs-5 text-gray-800 border-gray-200 bg-secondary">
+                                            <th v-for="(column, index) in table.header" v-text="column"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-end">
+                                        <tr v-for="(rows, index1) in table.body">
+                                            <td v-for="(row, index2) in rows" v-text="row.value" :style="{backgroundColor:(row.title ? '#E3F2FD' :''), fontWeight:(row.title ? '700' :'400'), color:(row.title ? '#0095e8' : 'inherit'), textAlign:(index2 == 0 ? 'left': 'right')}"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <!--end::Row-->
+        </div>
+        <!--end::Content container-->
+    </div>
+    <!--end::Content-->
+</div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="/assets/web/js/financialValora.js"></script>
+{% endblock %}

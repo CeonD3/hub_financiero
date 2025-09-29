@@ -1,0 +1,37 @@
+<div id="kt_app_footer" class="bg-light-success mt-5">
+    <!--begin::Footer container-->
+    <div class="app-container container-xxl d-flex flex-column py-10">
+        <div class="row">
+            <div class="col-lg-5 mb-10">
+                <h2><i class="fa-regular fa-building me-2"></i> {{ footer[0].content_name }}</h2>
+                {{ footer[0].content_description|raw }}
+                {#<div class="text-dark mb-3">
+                    Obtén una evaluación precisa y confiable para tomar decisiones informadas
+                </div>
+                <div class="">
+                    <a href="/valora">
+                        Evalua el verdadero valor de tu empresa con nuestra plataforma de valoración financiera
+                    </a>
+                </div>#}
+            </div>
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-5 mb-10">
+                <h2><i class="fa-solid fa-square-poll-vertical me-2"></i> {{ footer[2].content_name }}</h2>
+                <div class="text-dark mb-3">
+                    {{ footer[2].content_description|raw }}
+                </div>
+                <div class="">
+                    <form class="formSuscription">
+                        <div class="d-flex mb-3">
+                            <input type="email" name="email" id="" class="form-control me-3" placeholder="Escriba acá su E-mail" required>
+                            <button type="submit" class="btn btn-primary">Subscribirse</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--end::Menu-->
+    </div>
+    <!--end::Footer container-->
+</div>

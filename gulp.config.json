@@ -1,0 +1,10 @@
+{
+  "config": {
+    "path": {
+      "src": "./resources/assets/metronic.v8.1.6/template07/src"
+    },
+    "dist": [
+      "./resources/assets/metronic.v8.1.6/template07/dist"
+    ]
+  }
+}
