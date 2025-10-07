@@ -1,0 +1,702 @@
+<!-- Chatbot Component -->
+<div id="chatbot-container" class="position-fixed">
+  <!-- Chatbot Toggle Button -->
+  <button
+    id="chatbot-toggle"
+    class="btn btn-primary rounded-circle shadow-lg"
+    type="button"
+  >
+    <i class="fas fa-comments fs-4"></i>
+  </button>
+
+  <!-- Chatbot Window -->
+  <div id="chatbot-window" class="card shadow-lg" style="display: none">
+    <!-- Header -->
+    <div
+      class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+    >
+      <div
+        class="d-flex align-ite gene generationConfig: { temperature: 0.7, maxOutputTokens: 2048, topP: 0.8, topK: 40 }Config: { temperature: 0.7, maxOutputTokens: 1024, topP: 0.8, topK: 40 }ter"
+      >
+        <i class="fas fa-robot me-2 text-white"></i>
+        <span class="fw-bold">Asistente Virtual</span>
+      </div>
+      <div class="d-flex align-items-center">
+        <div class="status-indicator me-2"></div>
+        <button
+          id="chatbot-clear"
+          class="btn btn-sm border-0 me-1"
+          title="Nueva conversación"
+        >
+          <i class="fas fa-refresh text-white"></i>
+        </button>
+        <button id="chatbot-minimize" class="btn btn-sm border-0">
+          <i class="fas fa-minus text-white"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div id="chat-messages" class="card-body p-0">
+      <div class="chat-container">
+        <!-- Welcome Message -->
+        <div class="message ai-message">
+          <div class="message-avatar bg-primary">
+            <i class="fas fa-robot text-white"></i>
+          </div>
+          <div class="message-content">
+            <div class="message-bubble">
+              {{- "¡Hola! Soy tu asistente virtual especializado en finanzas. Puedo ayudarte con análisis financieros, reportes, navegación por la plataforma y consultas sobre metodologías. ¿En qué puedo asistirte?" -}}
+            </div>
+            <div class="message-time">
+              {{ "now"|date("H:i") }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <div class="card-footer bg-light border-0">
+      <div
+        class="input-group d-flex align-items-center justify-content-center gap-2"
+      >
+        <input
+          type="text"
+          id="chat-input"
+          class="form-control border-0 bg-white"
+          placeholder="Escribe tu mensaje..."
+          autocomplete="off"
+        />
+        <button
+          id="chat-send"
+          class="btn btn-primary ms-2 d-flex align-items-center justify-content-center"
+          type="button"
+        >
+          <i class="fas fa-paper-plane p-0 m-0"></i>
+        </button>
+      </div>
+      <div class="typing-indicator" id="typing-indicator" style="display: none">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <small class="text-muted ms-2">El asistente está escribiendo...</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chatbot Styles -->
+<style>
+  #chatbot-container {
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+  }
+
+  #chatbot-toggle {
+    width: 60px;
+    height: 60px;
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  #chatbot-toggle:hover {
+    transform: scale(1.1);
+  }
+
+  #chatbot-window {
+    width: 380px;
+    height: 700px;
+    border: none;
+    border-radius: 16px;
+    position: absolute;
+    bottom: 90px;
+    right: 0;
+    animation: slideUp 0.3s ease;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .card-header {
+    border-radius: 16px 16px 0 0 !important;
+    padding: 15px 20px;
+  }
+
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    background-color: #28a745;
+    box-shadow: 0 0 6px rgba(40, 167, 69, 0.6);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .chat-container {
+    height: 550px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 15px;
+    scroll-behavior: smooth;
+  }
+
+  .chat-container::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  .chat-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 10px;
+  }
+
+  .chat-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+
+  .message {
+    display: flex;
+    margin-bottom: 15px;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .user-message {
+    flex-direction: row-reverse;
+  }
+
+  .message-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin: 0 10px;
+    flex-shrink: 0;
+  }
+
+  .ai-message .message-avatar {
+    color: white;
+  }
+
+  .user-message .message-avatar {
+    color: white;
+  }
+
+  .user-message .message-avatar i::before {
+    content: "\f007"; /* fa-user */
+  }
+
+  .message-content {
+    flex: 0 1 auto;
+    max-width: 55%;
+    min-width: fit-content;
+  }
+
+  .message-bubble {
+    padding: 12px 16px;
+    border-radius: 18px;
+    word-wrap: break-word;
+    line-height: 1.5;
+    text-align: left;
+    white-space: pre-line;
+    display: block;
+    width: 70%;
+    min-width: 100px;
+    box-sizing: border-box;
+  }
+
+  .ai-message .message-bubble {
+    background: #f8f9fa;
+    color: #333;
+    border-bottom-left-radius: 6px;
+  }
+
+  .user-message .message-bubble {
+    background: linear-gradient(135deg, #009ef7 0%, #007dc4 100%);
+    color: white;
+    border-bottom-right-radius: 6px;
+  }
+
+  .user-message .message-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .message-time {
+    font-size: 10px;
+    color: #999;
+    margin-top: 4px;
+    padding: 0 4px;
+  }
+
+  .user-message .message-time {
+    text-align: right;
+  }
+
+  .card-footer {
+    border-radius: 0 0 16px 16px !important;
+    padding: 15px 20px;
+  }
+
+  #chat-input {
+    border-radius: 10px;
+    border: 1px solid #e9ecef !important;
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  #chat-input:focus {
+    border-color: #009ef7 !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 158, 247, 0.25) !important;
+  }
+
+  #chat-send {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #009ef7 0%, #007dc4 100%);
+  }
+
+  #chat-send:hover {
+    background: linear-gradient(135deg, #007dc4 0%, #005a8f 100%);
+    transform: scale(1.05);
+  }
+
+  .typing-indicator {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .typing-dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .typing-dots span {
+    width: 6px;
+    height: 6px;
+    background-color: #009ef7;
+    border-radius: 50%;
+    animation: typing 1.4s infinite;
+  }
+
+  .typing-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .typing-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes typing {
+    0%,
+    60%,
+    100% {
+      transform: translateY(0);
+    }
+    30% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 480px) {
+    #chatbot-window {
+      width: calc(100vw - 40px);
+      height: 60vh;
+      bottom: 80px;
+      right: 20px;
+      left: 20px;
+    }
+
+    #chatbot-container {
+      right: 20px;
+    }
+  }
+</style>
+
+<!-- Chatbot JavaScript -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const chatbotToggle = document.getElementById("chatbot-toggle");
+    const chatbotWindow = document.getElementById("chatbot-window");
+    const chatbotMinimize = document.getElementById("chatbot-minimize");
+    const chatbotClear = document.getElementById("chatbot-clear");
+    const chatInput = document.getElementById("chat-input");
+    const chatSend = document.getElementById("chat-send");
+    const chatMessages = document.querySelector(".chat-container");
+    const typingIndicator = document.getElementById("typing-indicator");
+
+    // Gemini API configuration
+    const GEMINI_API_KEY = '{{ APP.API_GEMINI_KEY ?? "" }}';
+    const GEMINI_API_URL =
+      "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent";
+
+    let isOpen = false;
+    let conversationHistory = [];
+
+    // Toggle chatbot window
+    chatbotToggle.addEventListener("click", function () {
+      isOpen = !isOpen;
+      if (isOpen) {
+        chatbotWindow.style.display = "block";
+        chatInput.focus();
+      } else {
+        chatbotWindow.style.display = "none";
+      }
+    });
+
+    // Minimize chatbot
+    chatbotMinimize.addEventListener("click", function () {
+      isOpen = false;
+      chatbotWindow.style.display = "none";
+      // Keep conversation history when minimizing, don't clear it
+    });
+
+    // Clear conversation
+    chatbotClear.addEventListener("click", function () {
+      clearConversationHistory();
+    });
+
+    // Clear conversation history and reset chat
+    function clearConversationHistory() {
+      conversationHistory = [];
+      // Remove all messages except welcome message
+      const messages = chatMessages.querySelectorAll(
+        ".message:not(:first-child)"
+      );
+      messages.forEach((message) => message.remove());
+
+      // Small visual feedback
+      const clearBtn = document.getElementById("chatbot-clear");
+      clearBtn.innerHTML = '<i class="fas fa-check text-white"></i>';
+      setTimeout(() => {
+        clearBtn.innerHTML = '<i class="fas fa-refresh text-white"></i>';
+      }, 1000);
+    }
+
+    // Send message on button click
+    chatSend.addEventListener("click", sendMessage);
+
+    // Send message on Enter key
+    chatInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Disable send button and input during API calls
+    function setLoadingState(isLoading) {
+      chatSend.disabled = isLoading;
+      chatInput.disabled = isLoading;
+
+      if (isLoading) {
+        chatSend.innerHTML = '<i class="fas fa-spinner fa-spin p-0 m-0"></i>';
+      } else {
+        chatSend.innerHTML = '<i class="fas fa-paper-plane p-0 m-0"></i>';
+      }
+    }
+
+    // Function to format API response text
+    function formatAPIResponse(text) {
+      if (!text) return "";
+
+      return (
+        text
+          // Remove markdown formatting
+          .replace(/\*\*(.*?)\*\*/g, "$1") // Remove bold **text**
+          .replace(/\*(.*?)\*/g, "$1") // Remove italic *text*
+          .replace(/`(.*?)`/g, "$1") // Remove code `text`
+
+          // Clean up numbered lists to be more natural
+          .replace(/^\s*\d+\.\s+\*\*(.*?)\*\*:\s*/gm, "$1: ") // "1. **Title**: " -> "Title: "
+          .replace(/^\s*\d+\.\s+/gm, "• ") // Convert "1. " to "• " for bullets
+
+          // Clean up bullet points - keep some for readability
+          .replace(/^\s*[-]\s+/gm, "• ") // Convert "- " to "• "
+
+          // Natural spacing like WhatsApp
+          .replace(/\n{3,}/g, "\n\n") // Multiple line breaks -> double line break
+          .replace(/^\s+|\s+$/g, "") // Trim whitespace
+
+          // Clean up colons and improve readability
+          .replace(/:\s*\n\n/g, ":\n") // "Title:\n\n" -> "Title:\n"
+          .replace(/:\s*\n\n/g, ": ") // "Title:\n\n" -> "Title: "
+          .replace(/\n\n([A-Z])/g, "\n\n$1")
+      ); // Add spacing before capital letters (new sections)
+    }
+
+    function sendMessage() {
+      const message = chatInput.value.trim();
+      if (message === "") return;
+
+      // Set loading state
+      setLoadingState(true);
+
+      // Add user message
+      addMessage(message, "user");
+      chatInput.value = "";
+
+      // Show typing indicator
+      showTypingIndicator();
+
+      // Call Gemini API
+      callGeminiAPI(message);
+    }
+
+    function addMessage(text, sender) {
+      const messageDiv = document.createElement("div");
+      messageDiv.className = `message ${sender}-message`;
+
+      const currentTime = new Date().toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      messageDiv.innerHTML = `
+            <div class="message-avatar ${sender === "user" ? "bg-secondary" : "bg-primary"}">
+                <i class="fas ${sender === "user" ? "fa-user" : "fa-robot"} text-white"></i>
+            </div>
+            <div class="message-content">
+                <div class="message-bubble">${text}</div>
+                <div class="message-time">${currentTime}</div>
+            </div>
+        `;
+
+      chatMessages.appendChild(messageDiv);
+
+      // Scroll to show the start of the new message
+      messageDiv.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+    }
+
+    function showTypingIndicator() {
+      typingIndicator.style.display = "flex";
+    }
+
+    function hideTypingIndicator() {
+      typingIndicator.style.display = "none";
+    }
+
+    async function callGeminiAPI(userMessage) {
+      try {
+        // Check if API key is available
+        if (
+          !GEMINI_API_KEY ||
+          GEMINI_API_KEY === "" ||
+          GEMINI_API_KEY === "undefined"
+        ) {
+          handleAPIError(
+            "API key no configurada. Asegúrese de que la variable API_GEMINI_KEY esté definida en las variables de entorno."
+          );
+          return;
+        }
+
+        // Validate API key format (Gemini API keys usually start with 'AIza')
+        if (!GEMINI_API_KEY.startsWith("AIza")) {
+          handleAPIError(
+            'Formato de API key inválido. Las claves de Gemini deben comenzar con "AIza".'
+          );
+          return;
+        }
+
+        // Prepare the request payload
+        const systemPrompt = `Eres un asistente virtual especializado en finanzas y análisis financiero. Tu nombre es "Asistente Virtual" y trabajas para una plataforma de análisis financiero llamada Kapitals. 
+
+Contexto: Estás ayudando a usuarios con consultas sobre:
+- Análisis financieros y reportes
+- Navegación por la plataforma
+- Interpretación de datos financieros
+- Metodologías de análisis
+- Recomendaciones financieras
+- Resúmenes y síntesis de textos financieros
+
+Instrucciones:
+- Sé MUY PRECISO y ESPECÍFICO en tus respuestas
+- Proporciona datos exactos, cifras concretas y ejemplos reales cuando sea posible
+- Evita respuestas vagas o genéricas
+- Responde de manera directa y profesional, SIN saludos repetitivos
+- Mantén las respuestas concisas pero completas (máximo 200 palabras)
+- ERES EXCELENTE resumiendo textos: extrae los puntos clave, cifras importantes y conclusiones principales
+- Para resúmenes, usa SOLO TEXTO PLANO sin emojis, símbolos, asteriscos, guiones o signos especiales
+- Estructura la información de forma clara pero sin formateo especial
+- Si no tienes información específica, sugiere donde pueden encontrarla en la plataforma
+- Usa un tono profesional en español
+- Si te preguntan sobre algo fuera del contexto financiero, redirige cortésmente hacia temas financieros
+- NO te presentes en cada respuesta, ya te conocen`;
+
+        // Build conversation context
+        const contents = [];
+
+        // Add system message only if it's the first message
+        if (conversationHistory.length === 0) {
+          contents.push({
+            role: "user",
+            parts: [{ text: systemPrompt }],
+          });
+          contents.push({
+            role: "model",
+            parts: [
+              {
+                text: "Entendido. Estoy listo para ayudarte con tus consultas financieras.",
+              },
+            ],
+          });
+        }
+
+        // Add conversation history
+        conversationHistory.forEach((msg) => {
+          contents.push(msg);
+        });
+
+        // Add current user message
+        contents.push({
+          role: "user",
+          parts: [{ text: userMessage }],
+        });
+
+        const requestBody = {
+          contents: contents,
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 8192,
+            topP: 0.8,
+            topK: 40,
+          },
+        };
+
+        // Make API call
+        const response = await fetch(
+          `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.text();
+          throw new Error(
+            `API request failed with status ${response.status}: ${errorData}`
+          );
+        }
+
+        const data = await response.json();
+
+        // Extract AI response
+        if (
+          data.candidates &&
+          data.candidates[0] &&
+          data.candidates[0].content
+        ) {
+          const rawResponse = data.candidates[0].content.parts[0].text;
+          const aiResponse = formatAPIResponse(rawResponse);
+
+          // Add both user message and AI response to conversation history
+          conversationHistory.push({
+            role: "user",
+            parts: [{ text: userMessage }],
+          });
+          conversationHistory.push({
+            role: "model",
+            parts: [{ text: aiResponse }],
+          });
+
+          hideTypingIndicator();
+          setLoadingState(false);
+          addMessage(aiResponse, "ai");
+        } else {
+          throw new Error("Invalid response format from API");
+        }
+      } catch (error) {
+        handleAPIError(error.message);
+      }
+    }
+
+    function handleAPIError(errorMessage) {
+      hideTypingIndicator();
+      setLoadingState(false);
+
+      // Fallback responses when API fails
+      const fallbackResponses = [
+        "Disculpa, estoy experimentando problemas técnicos en este momento. ¿Podrías intentar más tarde?",
+        "Lo siento, no puedo procesar tu consulta ahora. Te recomiendo revisar la documentación de la plataforma o contactar a soporte.",
+        "Temporalmente no puedo ayudarte con consultas específicas. ¿Te gustaría que te guíe a la sección de ayuda?",
+      ];
+
+      const fallbackResponse =
+        fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+      addMessage(fallbackResponse, "ai");
+
+      // Log error for debugging (only in development)
+      if (
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+      ) {
+        addMessage(`Debug: ${errorMessage}`, "ai");
+      }
+    }
+
+    // Close chatbot when clicking outside
+    document.addEventListener("click", function (e) {
+      if (
+        isOpen &&
+        !chatbotToggle.contains(e.target) &&
+        !chatbotWindow.contains(e.target)
+      ) {
+        isOpen = false;
+        chatbotWindow.style.display = "none";
+      }
+    });
+  });
+</script>

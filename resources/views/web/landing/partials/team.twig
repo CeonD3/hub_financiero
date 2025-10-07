@@ -1,6 +1,7 @@
 {% set titulo = [] %}
 {% set cargos = [] %}
 {% set colaboradores = [] %}
+{% set developmentTeam = [] %}
 
 {% for item in equipo %}
     {% if item.content_alias == 'tituloinf' %}
@@ -11,6 +12,9 @@
     {% endif %}
     {% if item.content_alias == 'colaborador' %}
         {% set colaboradores = colaboradores|merge([item]) %}
+    {% endif %}
+    {% if item.content_alias == 'equipoDesarrollo' %}
+        {% set developmentTeam = developmentTeam|merge([item]) %}
     {% endif %}
 {% endfor %}
 <!--begin::Team Section-->
@@ -29,10 +33,10 @@
         <div class="col-lg-12">
             <div class="row py-5">
                 <div class="col-lg-6">
-                    <div class="mb-3 row">
-                        <label class="col-lg-4 col-form-label fs-1 text-center fw-bold">Autores</label>
-                        <div class="col-lg-8">
-                            
+                    <!-- Autores -->
+                    <div class="mb-4">
+                        <label class="fs-1 fw-bold mb-3 d-block">Autores</label>
+                        <div class="ps-3">
                             {% for item in cargos %}
                             <div class="card bs-card-3">
                                 <div class="card-body">
@@ -75,11 +79,28 @@
                             #}                          
                         </div>
                     </div>
+                    
+                    <!-- Equipo de Desarrollo -->
+                    <div class="mb-4">
+                        <label class="fs-1 fw-bold mb-3 d-block">Equipo de Desarrollo</label>
+                        <div class="ps-3">
+                            <div class="card bs-card-3">
+                                <div class="card-body">
+                                    {% for item in developmentTeam %}
+                                        <h5 class="card-title">{{ item.content_name }}</h5>
+                                        <p class="card-text">{{ item.content_caption }}</p>
+                                        {% if not loop.last %}<hr class="my-2">{% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-6">
-                    <div class="mb-3 row">
-                        <label class="col-lg-4 col-form-label fs-1 text-center fw-fold">Colaboradores</label>
-                        <div class="col-lg-8">
+                    <!-- Colaboradores -->
+                    <div class="mb-4">
+                        <label class="fs-1 fw-bold mb-3 d-block">Colaboradores</label>
+                        <div class="ps-3">
                             {% for item in colaboradores %}
                             <div class="card bs-card-4">
                                 <div class="card-body">

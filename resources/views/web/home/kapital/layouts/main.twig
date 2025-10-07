@@ -12,7 +12,8 @@
 	<title>Plataforma Finanzas</title>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="shortcut icon" href="https://kapitals.org/assets/image/favicon.png" />
+	<link
+		rel="shortcut icon" href="{{ APP.API_APP_URL }}/assets/media/images/proideasicon.ico"/>
 	<!--begin::Fonts(mandatory for all pages)-->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
 	<!--end::Fonts-->
@@ -185,6 +186,10 @@
 		<!--end::Svg Icon-->
 	</div>
 	<!--end::Scrolltop-->
+	
+	<!-- Chatbot Component -->
+	{% include "web/home/partials/chatbot.twig" %}
+	
     <script>var hostUrl = "assets/";</script>
     <script src="/assets/web/js/bundle.min.js"></script>
 
