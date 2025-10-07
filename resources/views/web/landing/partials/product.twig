@@ -9,6 +9,44 @@
         {% set productos = productos|merge([item]) %}
     {% endif %}
 {% endfor %}
+
+{# Configuración de productos #}
+{% set product_config = [
+    {
+        'index': 0,
+        'icon': 'fa-solid fa-laptop',
+        'name': productos[0].content_name ?? 'Reporte Básico',
+        'description': productos[0].content_caption ?? 'Descripción del reporte básico',
+        'modal_description': productos[0].content_description ?? '',
+        'button_text': 'Adquirir reporte',
+        'price': 'Gratis',
+        'ribbon': '',
+        'modal_icon': 'fa-regular fa-envelope'
+    },
+    {
+        'index': 1,
+        'icon': 'fa-solid fa-laptop',
+        'name': productos[1].content_name ?? 'Reporte Detallado',
+        'description': 'Contiene los resultados del reporte de datos con la metodología. Asi mismo, se incluye 1 hora adicional de consultoría.',
+        'modal_description': productos[1].content_description ?? '',
+        'button_text': 'Adquirir reporte',
+        'price': 'S/ 299.00',
+        'ribbon': null,
+        'modal_icon': 'fa-solid fa-bolt'
+    },
+    {
+        'index': 2,
+        'icon': 'fa-solid fa-laptop',
+        'name': productos[2].content_name ?? 'Consultoría Especializada',
+        'description': 'Continue los resultados de la estimación del costo de capital de la empresa más el del sector y del mercado desarrollado',
+        'modal_description': productos[2].content_description ?? '',
+        'button_text': 'Adquirir consultoría',
+        'price': 'S/ 150.00 / hora',
+        'ribbon': null,
+        'modal_icon': 'fa-sharp fa-solid fa-chart-simple'
+    }
+] %}
+
 <!--begin::Team Section-->
 <div class="bs-landing-section bs-section-1" id="productos">
     <!--begin::Container-->
@@ -27,57 +65,33 @@
         <div class="tns tns-default" style="direction: ltr">
             <!--begin::Wrapper-->
             <div data-tns="true" data-tns-loop="true" data-tns-swipe-angle="false" data-tns-speed="2000" data-tns-autoplay="true" data-tns-autoplay-timeout="18000" data-tns-controls="true" data-tns-nav="false" data-tns-items="1" data-tns-center="false" data-tns-dots="false" data-tns-prev-button="#kt_team_slider_prev" data-tns-next-button="#kt_team_slider_next" data-tns-responsive="{1200: {items: 3}, 992: {items: 2}}">
+                
+                {% for product in product_config %}
                 <div class="card bs-card-2">
-                    <div class="card-body ">
-                        <div class="bs-card-ribbon">Gratis</div>
+                    <div class="card-body">
+                        {% if product.ribbon %}
+                            <div class="bs-card-ribbon">{{ product.ribbon }}</div>
+                        {% endif %}
                         <div class="bs-card-image">
-                            <i class="fa-solid fa-laptop"></i>
+                            <i class="{{ product.icon }}"></i>
                         </div>
-                        <div class="bs-card-title">{{productos[0].content_name}}</div>
+                        <div class="bs-card-title">{{ product.name }}</div>
                         <div class="bs-card-text">
-                            {{productos[0].content_caption}}
+                            {{ product.description }}
                         </div>
                     </div>
                     <div class="card-footer border-0">
-                        <button type="button" class="btn btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_product_modal_1">
-                            Ver más <i class="fa-solid fa-chevron-right ms-5"></i>
-                        </button>
+                        <div class="d-flex flex-column gap-2">
+                            <button type="button" class="btn btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_product_modal_{{ product.index + 1 }}">
+                                {{ product.button_text }} <i class="fa-solid fa-chevron-right ms-2"></i>
+                            </button>
+                            <div class="text-center">
+                                <span class="fs-4 fw-bold text-primary">{{ product.price }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-    
-                <div class="card bs-card-2">
-                    <div class="card-body ">
-                        <div class="bs-card-image">
-                            <i class="fa-solid fa-laptop"></i>
-                        </div>
-                        <div class="bs-card-title">Reporte Detallado</div>
-                        <div class="bs-card-text">
-                            Contiene los resultados del reporte de datos con la metodología. Asi mismo, se incluye 1 hora adicional de consultoría.
-                        </div>
-                    </div>
-                    <div class="card-footer border-0">
-                        <button type="button" class="btn btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_product_modal_2">
-                            Ver más <i class="fa-solid fa-chevron-right ms-5"></i>
-                        </button>
-                    </div>
-                </div>
-    
-                <div class="card bs-card-2">
-                    <div class="card-body ">
-                        <div class="bs-card-image">
-                            <i class="fa-solid fa-laptop"></i>
-                        </div>
-                        <div class="bs-card-title">Consultoría Especializada</div>
-                        <div class="bs-card-text">
-                            Continue los resultados de la estimación del costo de capital de la empresa más el del sector y del mercado desarrollado
-                        </div>
-                    </div>
-                    <div class="card-footer border-0">
-                        <button type="button" class="btn btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_product_modal_3">
-                            Ver más <i class="fa-solid fa-chevron-right ms-5"></i>
-                        </button>
-                    </div>
-                </div>
+                {% endfor %}
 
             </div>
             <!--end::Wrapper-->
@@ -113,59 +127,30 @@
 </div>
 <!--end::Team Section-->
 
-<div class="modal fade" tabindex="-1" id="kt_product_modal_1">
+{# Modales generados dinámicamente #}
+{% for product in product_config %}
+<div class="modal fade" tabindex="-1" id="kt_product_modal_{{ product.index + 1 }}">
     <div class="modal-dialog modal-md">
         <div class="modal-content bs-modal-1">
             <div class="modal-header">
-                <h3 class="modal-title">{{productos[0].content_name}}</h3>
+                <h3 class="modal-title">{{ product.name }}</h3>
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-active-light-info ms-2" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-regular fa-envelope text-info fs-3"></i>
+                    <i class="{{ product.modal_icon }} text-info fs-3"></i>
                 </div>
                 <!--end::Close-->
             </div>
             <div class="modal-body">
-                <p class="bs-modal-text">{{productos[0].content_description|raw}}</p>
-                <p><span class="badge badge-light-info fs-4">Free</span></p>
+                <p class="bs-modal-text">{{ product.modal_description|raw }}</p>
+                {% if product.index == 0 %}
+                    <p><span class="badge badge-light-info fs-4">Free</span></p>
+                {% else %}
+                    <div class="text-center mt-3">
+                        <span class="fs-3 fw-bold text-primary">{{ product.price }}</span>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
-
-<div class="modal fade" tabindex="-1" id="kt_product_modal_2">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content bs-modal-1">
-            <div class="modal-header">
-                <h3 class="modal-title">{{productos[1].content_name}}</h3>
-                <!--begin::Close-->
-                <div class="btn btn-icon btn-sm btn-active-light-info ms-2" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-solid fa-bolt text-info fs-3"></i>
-                </div>
-                <!--end::Close-->
-            </div>
-            <div class="modal-body">
-                <p class="bs-modal-text">{{productos[1].content_description|raw}}</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" tabindex="-1" id="kt_product_modal_3">
-    <div class="modal-dialog modal-md">
-        <div class="modal-content bs-modal-1">
-            <div class="modal-header">
-                <h3 class="modal-title">{{productos[2].content_name}}</h3>
-                <!--begin::Close-->
-                <div class="btn btn-icon btn-sm btn-active-light-info ms-2" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa-sharp fa-solid fa-chart-simple text-info fs-3"></i>
-                </div>
-                <!--end::Close-->
-            </div>
-            <div class="modal-body">
-                <p class="bs-modal-text">
-                    {{productos[2].content_description|raw}}
-                <p>
-            </div>
-        </div>
-    </div>
-</div>
+{% endfor %}
