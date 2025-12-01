@@ -6,20 +6,19 @@
     class="btn btn-primary rounded-circle shadow-lg"
     type="button"
   >
-    <i class="fas fa-comments fs-4"></i>
+    <i class="fas fa-chart-line fs-4"></i>
   </button>
 
   <!-- Chatbot Window -->
   <div id="chatbot-window" class="card shadow-lg" style="display: none">
     <!-- Header -->
     <div
-      class="card-header bg-primary text-white d-flex justify-content-between align-items-center"
+      class="card-header text-white d-flex justify-content-between align-items-center"
+      style="background: linear-gradient(135deg, #009ef7 0%, #007dc4 100%)"
     >
-      <div
-        class="d-flex align-ite gene generationConfig: { temperature: 0.7, maxOutputTokens: 2048, topP: 0.8, topK: 40 }Config: { temperature: 0.7, maxOutputTokens: 1024, topP: 0.8, topK: 40 }ter"
-      >
+      <div class="d-flex align-items-center">
         <i class="fas fa-robot me-2 text-white"></i>
-        <span class="fw-bold">Asistente Virtual</span>
+        <span class="fw-bold">Betito - Asistente WACC</span>
       </div>
       <div class="d-flex align-items-center">
         <div class="status-indicator me-2"></div>
@@ -45,8 +44,8 @@
             <i class="fas fa-robot text-white"></i>
           </div>
           <div class="message-content">
-            <div class="message-bubble">
-              {{- "¡Hola! Soy tu asistente virtual especializado en finanzas. Puedo ayudarte con análisis financieros, reportes, navegación por la plataforma y consultas sobre metodologías. ¿En qué puedo asistirte?" -}}
+            <div class="message-bubble" id="welcome-message">
+              <!-- El texto se carga dinámicamente desde JavaScript -->
             </div>
             <div class="message-time">
               {{ "now"|date("H:i") }}
@@ -65,7 +64,7 @@
           type="text"
           id="chat-input"
           class="form-control border-0 bg-white"
-          placeholder="Escribe tu mensaje..."
+          placeholder="Ej: Analiza mi beta actual..."
           autocomplete="off"
         />
         <button
@@ -82,7 +81,7 @@
           <span></span>
           <span></span>
         </div>
-        <small class="text-muted ms-2">El asistente está escribiendo...</small>
+        <small class="text-muted ms-2">Analizando datos financieros...</small>
       </div>
     </div>
   </div>
@@ -108,7 +107,7 @@
   }
 
   #chatbot-window {
-    width: 380px;
+    width: 450px;
     height: 700px;
     border: none;
     border-radius: 16px;
@@ -161,6 +160,13 @@
     overflow-x: hidden;
     padding: 15px;
     scroll-behavior: smooth;
+    background: #f0f0f0;
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(255, 255, 255, 0.15) 1px,
+      transparent 0
+    );
+    background-size: 20px 20px;
   }
 
   .chat-container::-webkit-scrollbar {
@@ -183,8 +189,9 @@
 
   .message {
     display: flex;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     animation: fadeIn 0.3s ease;
+    clear: both;
   }
 
   @keyframes fadeIn {
@@ -200,6 +207,11 @@
 
   .user-message {
     flex-direction: row-reverse;
+    justify-content: flex-start;
+  }
+
+  .ai-message {
+    justify-content: flex-start;
   }
 
   .message-avatar {
@@ -223,67 +235,88 @@
   }
 
   .user-message .message-avatar i::before {
-    content: "\f007"; /* fa-user */
   }
 
   .message-content {
     flex: 0 1 auto;
-    max-width: 55%;
-    min-width: fit-content;
+    max-width: 90%;
+    width: 90%;
+    position: relative;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   .message-bubble {
-    padding: 12px 16px;
-    border-radius: 18px;
+    padding: 10px 16px;
+    border-radius: 20px;
     word-wrap: break-word;
-    line-height: 1.5;
+    overflow-wrap: break-word;
+    line-height: 1.4;
     text-align: left;
-    white-space: pre-line;
-    display: block;
-    width: 70%;
-    min-width: 100px;
+    white-space: pre-wrap;
+    display: inline-block;
+    max-width: 100%;
+    min-width: 60px;
     box-sizing: border-box;
+    font-size: 14px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    hyphens: auto;
   }
 
   .ai-message .message-bubble {
     background: #f8f9fa;
     color: #333;
-    border-bottom-left-radius: 6px;
+    border-bottom-left-radius: 5px;
+    margin-left: 10px;
   }
 
   .user-message .message-bubble {
     background: linear-gradient(135deg, #009ef7 0%, #007dc4 100%);
     color: white;
-    border-bottom-right-radius: 6px;
+    border-bottom-right-radius: 5px;
+    margin-right: 10px;
   }
 
   .user-message .message-content {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    max-width: 85%;
   }
 
   .message-time {
-    font-size: 10px;
-    color: #999;
+    font-size: 11px;
     margin-top: 4px;
-    padding: 0 4px;
+    margin-bottom: 2px;
+    padding: 0 8px;
   }
 
   .user-message .message-time {
     text-align: right;
+    color: #666;
+    margin-right: 10px;
+  }
+
+  .ai-message .message-time {
+    text-align: left;
+    color: #999;
+    margin-left: 10px;
   }
 
   .card-footer {
     border-radius: 0 0 16px 16px !important;
     padding: 15px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #e9ecef;
   }
 
   #chat-input {
-    border-radius: 10px;
-    border: 1px solid #e9ecef !important;
+    border-radius: 25px;
+    border: 1px solid #ddd !important;
     padding: 12px 20px;
     font-size: 14px;
+    background: #ffffff;
   }
 
   #chat-input:focus {
@@ -292,11 +325,13 @@
   }
 
   #chat-send {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border: none;
-    border-radius: 10px;
+    border-radius: 50%;
     background: linear-gradient(135deg, #009ef7 0%, #007dc4 100%);
+    color: white;
+    transition: all 0.3s ease;
   }
 
   #chat-send:hover {
@@ -342,6 +377,234 @@
     }
   }
 
+  /* Beta update section styles */
+  .beta-update-section {
+    margin-top: 15px;
+    padding: 15px;
+    background: linear-gradient(135deg, #e3f2fd 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    border-left: 4px solid #009ef7;
+  }
+
+  .beta-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: #009ef7;
+  }
+
+  .beta-update-btn {
+    background: linear-gradient(135deg, #009ef7 0%, #007dc4 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+
+  .beta-update-btn:hover {
+    background: linear-gradient(135deg, #007dc4 0%, #005a8f 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 158, 247, 0.3);
+  }
+
+  .companies-list {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 10px 0;
+    border-left: 3px solid #28a745;
+  }
+
+  .company-item {
+    font-size: 12px;
+    margin: 2px 0;
+    color: #555;
+  }
+
+  /* Yahoo Finance Results Styles */
+  .yahoo-finance-results {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 10px 0;
+    border-left: 4px solid #009ef7;
+  }
+
+  .results-header h5 {
+    color: #009ef7;
+    margin-bottom: 5px;
+    font-size: 16px;
+  }
+
+  .group-stats {
+    background: white;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #e9ecef;
+  }
+
+  .group-stats h6 {
+    color: #495057;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+    font-size: 12px;
+  }
+
+  .stat-label {
+    color: #6c757d;
+    font-weight: 500;
+  }
+
+  .stat-value {
+    color: #009ef7;
+    font-weight: 600;
+  }
+
+  .companies-detail h6 {
+    color: #495057;
+    margin: 15px 0 10px 0;
+    font-size: 14px;
+  }
+
+  .company-card {
+    background: white;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 4px 0;
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+  }
+
+  .company-card:hover {
+    border-color: #009ef7;
+    box-shadow: 0 2px 4px rgba(0, 158, 247, 0.1);
+  }
+
+  .company-clickable {
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .company-clickable:hover {
+    border-color: #009ef7 !important;
+    box-shadow: 0 4px 12px rgba(0, 158, 247, 0.15) !important;
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #f8fcff 0%, #ffffff 100%);
+  }
+
+  .company-clickable:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 8px rgba(0, 158, 247, 0.2);
+  }
+
+  .company-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3px;
+  }
+
+  .company-name {
+    font-weight: 600;
+    color: #495057;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .company-ticker {
+    background: #009ef7;
+    color: white;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .company-details {
+    margin-bottom: 1px;
+  }
+
+  .company-location {
+    color: #6c757d;
+    font-size: 10px;
+    line-height: 1.2;
+  }
+
+  .financial-data {
+    border-top: 1px solid #f1f3f4;
+    padding-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-top: 4px;
+  }
+
+  .data-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1px 0;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .data-row.highlight {
+    background: linear-gradient(135deg, #e3f2fd 0%, #f8f9fa 100%);
+    padding: 3px 6px;
+    border-radius: 3px;
+    margin-top: 2px;
+    font-weight: 600;
+  }
+
+  .data-row span:first-child {
+    color: #6c757d;
+    font-weight: 500;
+  }
+
+  .data-row .value {
+    color: #009ef7;
+    font-weight: 600;
+  }
+
+  .click-hint {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4px 8px;
+    border-top: 1px solid #f1f3f4;
+    margin-top: 4px;
+    color: #009ef7;
+    font-weight: 500;
+  }
+
+  .company-clickable .click-hint {
+    opacity: 0.8;
+    transition: all 0.3s ease;
+  }
+
+  .company-clickable:hover .click-hint {
+    opacity: 1;
+    background: rgba(0, 158, 247, 0.1);
+    color: #007dc4;
+  }
+
   /* Mobile Responsive */
   @media (max-width: 480px) {
     #chatbot-window {
@@ -354,6 +617,10 @@
 
     #chatbot-container {
       right: 20px;
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
@@ -378,6 +645,12 @@
     let isOpen = false;
     let conversationHistory = [];
 
+    // Define welcome message text to avoid editor formatting issues
+    const welcomeText =
+      "¡Hola! Soy Betito, tu asistente especializado en análisis de BETA para WACC. Puedo ayudarte a: • Analizar tu beta actual basado en los datos del formulario • Recomendar 10-20 empresas comparables del sector • Calcular un nuevo beta optimizado • Actualizar automáticamente tu formulario ¿Quieres que analice tus datos actuales?";
+
+    // Welcome message will be formatted after formatAPIResponse function is defined
+
     // Toggle chatbot window
     chatbotToggle.addEventListener("click", function () {
       isOpen = !isOpen;
@@ -393,7 +666,6 @@
     chatbotMinimize.addEventListener("click", function () {
       isOpen = false;
       chatbotWindow.style.display = "none";
-      // Keep conversation history when minimizing, don't clear it
     });
 
     // Clear conversation
@@ -401,16 +673,13 @@
       clearConversationHistory();
     });
 
-    // Clear conversation history and reset chat
     function clearConversationHistory() {
       conversationHistory = [];
-      // Remove all messages except welcome message
       const messages = chatMessages.querySelectorAll(
         ".message:not(:first-child)"
       );
       messages.forEach((message) => message.remove());
 
-      // Small visual feedback
       const clearBtn = document.getElementById("chatbot-clear");
       clearBtn.innerHTML = '<i class="fas fa-check text-white"></i>';
       setTimeout(() => {
@@ -429,7 +698,6 @@
       }
     });
 
-    // Disable send button and input during API calls
     function setLoadingState(isLoading) {
       chatSend.disabled = isLoading;
       chatInput.disabled = isLoading;
@@ -441,7 +709,6 @@
       }
     }
 
-    // Function to format API response text
     function formatAPIResponse(text) {
       if (!text) return "";
 
@@ -452,39 +719,53 @@
           .replace(/\*(.*?)\*/g, "$1") // Remove italic *text*
           .replace(/`(.*?)`/g, "$1") // Remove code `text`
 
-          // Clean up numbered lists to be more natural
+          // Remove all bullet points and numbered lists
           .replace(/^\s*\d+\.\s+\*\*(.*?)\*\*:\s*/gm, "$1: ") // "1. **Title**: " -> "Title: "
-          .replace(/^\s*\d+\.\s+/gm, "• ") // Convert "1. " to "• " for bullets
+          .replace(/^\s*\d+\.\s+/gm, "") // Remove "1. " numbering
+          .replace(/^\s*[-•]\s+/gm, "") // Remove "- " and "• " bullets
+          .replace(/^\s*\*\s+/gm, "") // Remove "* " bullets
 
-          // Clean up bullet points - keep some for readability
-          .replace(/^\s*[-]\s+/gm, "• ") // Convert "- " to "• "
-
-          // Natural spacing like WhatsApp
+          // Clean up spacing - use single line breaks instead of bullets
           .replace(/\n{3,}/g, "\n\n") // Multiple line breaks -> double line break
           .replace(/^\s+|\s+$/g, "") // Trim whitespace
 
           // Clean up colons and improve readability
           .replace(/:\s*\n\n/g, ":\n") // "Title:\n\n" -> "Title:\n"
-          .replace(/:\s*\n\n/g, ": ") // "Title:\n\n" -> "Title: "
-          .replace(/\n\n([A-Z])/g, "\n\n$1")
-      ); // Add spacing before capital letters (new sections)
+          .replace(/\n\n([A-Z])/g, "\n\n$1") // Add spacing before capital letters (new sections)
+      );
+    }
+
+    function formatWelcomeMessage(text) {
+      if (!text) return "";
+
+      return (
+        text
+          // Remove bullets and clean up
+          .replace(/•\s+/g, "") // Remove bullet points
+          .replace(/:\s+/g, ":\n") // Add line breaks after colons
+          .replace(/formulario\s+/g, "formulario\n") // Line break after formulario
+          .replace(/sector\s+/g, "sector\n") // Line break after sector
+          .replace(/optimizado\s+/g, "optimizado\n") // Line break after optimizado
+          .replace(/formulario\s+¿/g, "formulario\n\n¿") // Double line break before question
+          .trim()
+      );
+    }
+
+    // Initialize welcome message now that formatWelcomeMessage is defined
+    const welcomeMessage = document.getElementById("welcome-message");
+    if (welcomeMessage) {
+      const formattedText = formatWelcomeMessage(welcomeText);
+      welcomeMessage.textContent = formattedText;
     }
 
     function sendMessage() {
       const message = chatInput.value.trim();
       if (message === "") return;
 
-      // Set loading state
       setLoadingState(true);
-
-      // Add user message
       addMessage(message, "user");
       chatInput.value = "";
-
-      // Show typing indicator
       showTypingIndicator();
-
-      // Call Gemini API
       callGeminiAPI(message);
     }
 
@@ -508,8 +789,6 @@
         `;
 
       chatMessages.appendChild(messageDiv);
-
-      // Scroll to show the start of the new message
       messageDiv.scrollIntoView({
         behavior: "smooth",
         block: "start",
@@ -525,57 +804,146 @@
       typingIndicator.style.display = "none";
     }
 
+    // Function to get current form data from WACC form
+    function getCurrentFormData() {
+      const form = document.querySelector(".formWACC");
+      if (!form) return null;
+
+      const formData = {};
+
+      // Get all form inputs
+      const inputs = form.querySelectorAll("input, select, textarea");
+      inputs.forEach((input) => {
+        if (input.name && input.value) {
+          formData[input.name] = input.value;
+        }
+      });
+
+      return formData;
+    }
+
+    // Function to get current results data (if available)
+    function getCurrentResultsData() {
+      // Try to get data from Vue component if available
+      if (window.AppFinanceWeb && window.AppFinanceWeb.modules.length > 0) {
+        const module = window.AppFinanceWeb.modules.find(
+          (m) => m.$el && m.$el.id === "AppResultKapitalWeb"
+        );
+        if (module) {
+          return {
+            emergent: module.emergent,
+            developed: module.developed,
+            company: module.company,
+            template: module.template,
+            typeId: module.typeId,
+          };
+        }
+      }
+      return null;
+    }
+
     async function callGeminiAPI(userMessage) {
       try {
-        // Check if API key is available
         if (
           !GEMINI_API_KEY ||
           GEMINI_API_KEY === "" ||
           GEMINI_API_KEY === "undefined"
         ) {
-          handleAPIError(
-            "API key no configurada. Asegúrese de que la variable API_GEMINI_KEY esté definida en las variables de entorno."
-          );
+          handleAPIError("API key no configurada. Contacta al administrador.");
           return;
         }
 
-        // Validate API key format (Gemini API keys usually start with 'AIza')
         if (!GEMINI_API_KEY.startsWith("AIza")) {
-          handleAPIError(
-            'Formato de API key inválido. Las claves de Gemini deben comenzar con "AIza".'
-          );
+          handleAPIError("Formato de API key inválido.");
           return;
         }
 
-        // Prepare the request payload
-        const systemPrompt = `Eres un asistente virtual especializado en finanzas y análisis financiero. Tu nombre es "Asistente Virtual" y trabajas para una plataforma de análisis financiero llamada Kapitals. 
+        // Get current form and results data
+        const formData = getCurrentFormData();
+        const resultsData = getCurrentResultsData();
+        const currentPage = window.location.pathname;
 
-Contexto: Estás ayudando a usuarios con consultas sobre:
-- Análisis financieros y reportes
-- Navegación por la plataforma
-- Interpretación de datos financieros
-- Metodologías de análisis
-- Recomendaciones financieras
-- Resúmenes y síntesis de textos financieros
+        // Prepare the specialized beta analysis prompt
+        const systemPrompt = `Eres un asistente especializado en análisis de BETA FINANCIERO para cálculos WACC en la plataforma Kapitals. Tu misión es generar una lista de tickers de empresas comparables y luego usar el sistema de análisis automático para obtener datos EXACTOS de Yahoo Finance.
 
-Instrucciones:
-- Sé MUY PRECISO y ESPECÍFICO en tus respuestas
-- Proporciona datos exactos, cifras concretas y ejemplos reales cuando sea posible
-- Evita respuestas vagas o genéricas
-- Responde de manera directa y profesional, SIN saludos repetitivos
-- Mantén las respuestas concisas pero completas (máximo 200 palabras)
-- ERES EXCELENTE resumiendo textos: extrae los puntos clave, cifras importantes y conclusiones principales
-- Para resúmenes, usa SOLO TEXTO PLANO sin emojis, símbolos, asteriscos, guiones o signos especiales
-- Estructura la información de forma clara pero sin formateo especial
-- Si no tienes información específica, sugiere donde pueden encontrarla en la plataforma
-- Usa un tono profesional en español
-- Si te preguntan sobre algo fuera del contexto financiero, redirige cortésmente hacia temas financieros
-- NO te presentes en cada respuesta, ya te conocen`;
+METODOLOGÍA DE TRABAJO:
+1. Cuando el usuario solicite análisis, genera una lista de 15-20 tickers de empresas del mismo sector
+2. Los tickers deben ser EXACTAMENTE como aparecen en Yahoo Finance (ej: AAPL, MSFT, GOOGL)
+3. Para empresas no-US, incluye el sufijo correcto (ej: .TO para Toronto, .L para Londres)
+4. El sistema automáticamente extraerá datos reales de Yahoo Finance
+5. Presenta los resultados calculados y recomienda un beta optimizado
 
-        // Build conversation context
+DATOS ACTUALES DEL USUARIO:
+${
+  formData
+    ? `
+FORMULARIO WACC:
+- Fecha: ${formData.date || "No especificado"}
+- Industria/Sector: ${formData.sector || "No especificado"}
+- País: ${formData.country || "No especificado"}
+- Tasa libre de riesgo: ${formData.instrument || "No especificado"}
+- Año del bono: ${formData.bono || "No especificado"}
+- Devaluación: ${formData.devaluation || "No especificado"}%
+- Tasa impositiva: ${formData.tax || "No especificado"}%
+- Tipo de análisis: ${formData.typeId === "2" ? "Empresa específica" : "Análisis sectorial"}
+${
+  formData.typeId === "2"
+    ? `
+DATOS DE LA EMPRESA:
+- Moneda: ${formData.currency || "No especificado"}
+- Costo de deuda (Kd): ${formData.kd || "No especificado"}%
+- Porcentaje de deuda: ${formData.debt || "No especificado"}%
+- Porcentaje de capital: ${formData.capital || "No especificado"}%`
+    : ""
+}`
+    : "No hay datos del formulario"
+}
+
+${
+  resultsData
+    ? `
+RESULTADOS ACTUALES:
+- Tipo de análisis: ${resultsData.typeId === 1 ? "Sectorial" : "Empresa específica"}
+- WACC Emergentes: ${resultsData.emergent?.cppc || "N/A"}%
+- WACC Desarrollados: ${resultsData.developed?.cppc || "N/A"}%
+${resultsData.typeId === 2 ? `- WACC Empresa: ${resultsData.company?.pen?.cppc || resultsData.company?.usd?.cppc || "N/A"}%` : ""}`
+    : "No hay resultados disponibles"
+}
+
+Página actual: ${currentPage}
+
+FORMATO DE RESPUESTA OBLIGATORIO:
+
+=== ANÁLISIS DE BETA PARA [SECTOR] ===
+
+Análisis automatizado solicitado para empresas comparables del sector [SECTOR_NAME].
+
+TICKERS:[TICKER1,TICKER2,TICKER3,TICKER4,TICKER5,TICKER6,TICKER7,TICKER8,TICKER9,TICKER10,TICKER11,TICKER12,TICKER13,TICKER14,TICKER15,TICKER16,TICKER17,TICKER18,TICKER19,TICKER20]
+
+[Explicación breve del sector y criterios de selección]
+
+INSTRUCCIONES CRÍTICAS:
+- SIEMPRE incluye "TICKERS:[lista_de_tickers]" en tu respuesta
+- Los tickers deben estar separados por comas SIN ESPACIOS
+- Ejemplo: TICKERS:[AAPL,MSFT,GOOGL,AMZN,TSLA]
+- Usa tickers EXACTOS de Yahoo Finance
+- Para empresas internacionales usa sufijos (.TO, .L, .PA, etc.)
+- NO inventes tickers - usa solo empresas reales que conozcas que existen en Yahoo Finance
+
+El sistema automáticamente:
+1. Extraerá datos reales de Yahoo Finance para cada ticker
+2. Calculará D/C ratio, tasa impositiva efectiva y betas
+3. Generará recomendaciones de beta optimizado
+4. Te presentará los resultados para que el usuario pueda elegir
+
+REGLAS CRÍTICAS:
+- SIEMPRE incluye "TICKERS:[lista]" en formato exacto
+- Máximo 20 tickers por análisis
+- Enfócate en empresas del MISMO SECTOR/INDUSTRIA
+- Explica brevemente por qué seleccionaste esas empresas`;
+
         const contents = [];
 
-        // Add system message only if it's the first message
         if (conversationHistory.length === 0) {
           contents.push({
             role: "user",
@@ -585,18 +953,16 @@ Instrucciones:
             role: "model",
             parts: [
               {
-                text: "Entendido. Estoy listo para ayudarte con tus consultas financieras.",
+                text: "Perfecto. Soy tu asistente especializado en análisis de beta para WACC. Puedo analizar tu sector, recomendar empresas comparables y optimizar tu beta. ¿Quieres que analice tus datos actuales?",
               },
             ],
           });
         }
 
-        // Add conversation history
         conversationHistory.forEach((msg) => {
           contents.push(msg);
         });
 
-        // Add current user message
         contents.push({
           role: "user",
           parts: [{ text: userMessage }],
@@ -605,14 +971,13 @@ Instrucciones:
         const requestBody = {
           contents: contents,
           generationConfig: {
-            temperature: 0.7,
+            temperature: 0.2, // Lower for more precise financial data
             maxOutputTokens: 8192,
             topP: 0.8,
             topK: 40,
           },
         };
 
-        // Make API call
         const response = await fetch(
           `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
           {
@@ -626,65 +991,530 @@ Instrucciones:
 
         if (!response.ok) {
           const errorData = await response.text();
-          throw new Error(
-            `API request failed with status ${response.status}: ${errorData}`
-          );
+          throw new Error(`API request failed: ${response.status}`);
         }
 
         const data = await response.json();
 
-        // Extract AI response
         if (
           data.candidates &&
           data.candidates[0] &&
           data.candidates[0].content
         ) {
-          const rawResponse = data.candidates[0].content.parts[0].text;
-          const aiResponse = formatAPIResponse(rawResponse);
+          let rawResponse = data.candidates[0].content.parts[0].text;
 
-          // Add both user message and AI response to conversation history
+          // Check if response contains tickers for analysis
+          const tickersMatch = rawResponse.match(/TICKERS:\[([^\]]+)\]/i);
+          if (tickersMatch) {
+            const tickersString = tickersMatch[1];
+            const tickers = tickersString
+              .split(",")
+              .map((t) => t.trim())
+              .filter((t) => t.length > 0);
+
+            if (tickers.length > 0) {
+              // Remove the TICKERS line from display
+              const displayResponse = rawResponse
+                .replace(/TICKERS:\[([^\]]+)\]/i, "")
+                .trim();
+
+              // Show the AI response first
+              const aiResponse = formatAPIResponse(displayResponse);
+              addMessage(aiResponse, "ai");
+
+              // Then analyze the tickers
+              analyzeYahooFinanceTickers(tickers);
+            } else {
+              const aiResponse = formatAPIResponse(rawResponse);
+              addMessage(aiResponse, "ai");
+            }
+          } else {
+            // Check if response contains beta update
+            const betaUpdateMatch = rawResponse.match(
+              /BETA_UPDATE:\s*([\d.]+)/i
+            );
+            if (betaUpdateMatch) {
+              const newBeta = parseFloat(betaUpdateMatch[1]);
+              // Remove the BETA_UPDATE line from display
+              rawResponse = rawResponse
+                .replace(/BETA_UPDATE:\s*[\d.]+/i, "")
+                .trim();
+              showBetaUpdateButton(rawResponse, newBeta);
+            } else {
+              const aiResponse = formatAPIResponse(rawResponse);
+              addMessage(aiResponse, "ai");
+            }
+          }
+
           conversationHistory.push({
             role: "user",
             parts: [{ text: userMessage }],
           });
           conversationHistory.push({
             role: "model",
-            parts: [{ text: aiResponse }],
+            parts: [{ text: rawResponse }],
           });
 
           hideTypingIndicator();
           setLoadingState(false);
-          addMessage(aiResponse, "ai");
         } else {
-          throw new Error("Invalid response format from API");
+          throw new Error("Invalid response format");
         }
       } catch (error) {
         handleAPIError(error.message);
       }
     }
 
+    // Function to analyze tickers using Yahoo Finance endpoint
+    async function analyzeYahooFinanceTickers(tickers) {
+      try {
+        addMessage("🔍 Analizando empresas en Yahoo Finance...", "ai");
+        showTypingIndicator();
+
+        const response = await fetch("/api/analyze-companies", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            tickers: tickers,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        hideTypingIndicator();
+
+        if (
+          data.success &&
+          data.valid_companies &&
+          data.valid_companies.length > 0
+        ) {
+          displayYahooFinanceResults(data);
+        } else {
+          addMessage(
+            "⚠️ No se pudieron obtener datos válidos de Yahoo Finance para los tickers proporcionados.",
+            "ai"
+          );
+        }
+      } catch (error) {
+        hideTypingIndicator();
+        addMessage(`❌ Error analizando empresas: ${error.message}`, "ai");
+      }
+    }
+
+    // Function to display Yahoo Finance analysis results
+    function displayYahooFinanceResults(data) {
+      const validCompanies = data.valid_companies;
+      const stats = data.group_statistics;
+
+      let resultHtml = `
+        <div class="yahoo-finance-results">
+          <div class="results-header">
+            <h5><i class="fas fa-chart-line me-2"></i>Análisis Yahoo Finance Completado</h5>
+          </div>
+      `;
+      // Individual companies
+      resultHtml += `
+        <div class="companies-detail">
+          <h6><i class="fas fa-building me-2"></i>Empresas Analizadas</h6>
+          <div class="companies-list">
+      `;
+
+      validCompanies.forEach((company, index) => {
+        const dcRatioPercent = company.dc_ratio
+          ? (company.dc_ratio * 100).toFixed(1)
+          : "N/A";
+        const taxRatePercent = company.effective_tax_rate
+          ? (company.effective_tax_rate * 100).toFixed(1)
+          : "N/A";
+
+        resultHtml += `
+          <div class="company-card company-clickable" data-company-index="${index}">
+            <div class="company-header">
+              <span class="company-name">${company.company_name}</span>
+              <span class="company-ticker">${company.ticker}</span>
+            </div>
+            <div class="company-details">
+              <small class="company-location">${company.country} | ${company.sector}</small>
+            </div>
+            <div class="financial-data">
+              <div class="data-row">
+                <span>D/C Ratio:</span>
+                <span class="value">${dcRatioPercent}%</span>
+              </div>
+              <div class="data-row">
+                <span>Tasa Impositiva:</span>
+                <span class="value">${taxRatePercent}%</span>
+              </div>
+              <div class="data-row">
+                <span>Beta Apalancado:</span>
+                <span class="value">${company.beta_levered || "N/A"}</span>
+              </div>
+              <div class="data-row highlight">
+                <span>Beta Desapalancado:</span>
+                <span class="value">${company.beta_unlevered || "N/A"}</span>
+              </div>
+            </div>
+            <div class="click-hint">
+              <i class="fas fa-mouse-pointer me-1"></i>
+              <small>Haz clic para usar estos datos</small>
+            </div>
+          </div>
+        `;
+      });
+
+      resultHtml += `
+          </div>
+        </div>
+      `;
+
+      resultHtml += `</div>`;
+
+      // Create message with results
+      const messageDiv = document.createElement("div");
+      messageDiv.className = "message ai-message";
+
+      const currentTime = new Date().toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      messageDiv.innerHTML = `
+        <div class="message-avatar bg-primary">
+            <i class="fas fa-robot text-white"></i>
+        </div>
+        <div class="message-content">
+            <div class="message-bubble">${resultHtml}</div>
+            <div class="message-time">${currentTime}</div>
+        </div>
+      `;
+
+      chatMessages.appendChild(messageDiv);
+
+      // Add event listeners to company cards after they're in the DOM
+      const companyCards = messageDiv.querySelectorAll(".company-clickable");
+      companyCards.forEach((card) => {
+        const companyIndex = parseInt(card.getAttribute("data-company-index"));
+        const company = validCompanies[companyIndex];
+
+        card.addEventListener("click", function () {
+          console.log("Company card clicked:", company);
+          applyCompanyData(company.ticker, company);
+        });
+      });
+
+      messageDiv.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+    }
+
+    // Function to apply recommended beta
+    window.applyRecommendedBeta = function (betaValue, type) {
+      updateBetaValue(betaValue);
+      addMessage(`✓ Beta ${type} de ${betaValue} aplicado exitosamente.`, "ai");
+    };
+
+    // Function to apply specific company data
+    window.applyCompanyData = function (ticker, companyData) {
+      console.log("=== DEBUGGING applyCompanyData ===");
+      console.log("Ticker:", ticker);
+      console.log("CompanyData type:", typeof companyData);
+      console.log("CompanyData:", companyData);
+
+      try {
+        if (!companyData || typeof companyData !== "object") {
+          throw new Error("Datos de empresa inválidos");
+        }
+
+        console.log("Financial data to apply:");
+        console.log("- dc_ratio:", companyData.dc_ratio);
+        console.log("- effective_tax_rate:", companyData.effective_tax_rate);
+        console.log("- beta_levered:", companyData.beta_levered);
+        console.log("- beta_unlevered:", companyData.beta_unlevered);
+
+        updateFinancialData({
+          dc_ratio: companyData.dc_ratio,
+          effective_tax_rate: companyData.effective_tax_rate,
+          beta_levered: companyData.beta_levered,
+          beta_unlevered: companyData.beta_unlevered,
+        });
+
+        addMessage(
+          `📊 Datos de ${companyData.company_name} (${ticker}) aplicados al formulario exitosamente.`,
+          "ai"
+        );
+      } catch (error) {
+        console.error("Error in applyCompanyData:", error);
+        addMessage(
+          `❌ Error aplicando datos de ${ticker}: ${error.message}`,
+          "ai"
+        );
+      }
+    };
+
+    // Function to apply group financial data (average/median)
+    window.applyGroupFinancialData = function (
+      betaUnlevered,
+      dcRatio,
+      taxRate,
+      type
+    ) {
+      updateFinancialData({
+        dc_ratio: dcRatio,
+        effective_tax_rate: taxRate,
+        beta_levered: null, // Will be calculated based on other values
+        beta_unlevered: betaUnlevered,
+      });
+
+      addMessage(
+        `📈 Datos ${type} del grupo aplicados:
+• Beta Desapalancado: ${betaUnlevered.toFixed(4)}
+• D/C Ratio: ${(dcRatio * 100).toFixed(1)}%
+• Tasa Impositiva: ${(taxRate * 100).toFixed(1)}%`,
+        "ai"
+      );
+    };
+
+    // Function to show beta update button
+    function showBetaUpdateButton(responseText, newBeta) {
+      const cleanResponse = formatAPIResponse(responseText);
+
+      const updateButtonHtml = `
+        <div class="beta-update-section">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+              <div class="beta-value">Nuevo Beta Sugerido: ${newBeta}</div>
+              <small class="text-muted">Basado en empresas comparables del sector</small>
+            </div>
+            <button class="beta-update-btn" onclick="updateBetaValue(${newBeta})">
+              Actualizar Beta
+            </button>
+          </div>
+        </div>`;
+
+      // Create message with response + button
+      const messageDiv = document.createElement("div");
+      messageDiv.className = "message ai-message";
+
+      const currentTime = new Date().toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+      messageDiv.innerHTML = `
+        <div class="message-avatar bg-primary">
+            <i class="fas fa-robot text-white"></i>
+        </div>
+        <div class="message-content">
+            <div class="message-bubble">${cleanResponse}${updateButtonHtml}</div>
+            <div class="message-time">${currentTime}</div>
+        </div>
+      `;
+
+      chatMessages.appendChild(messageDiv);
+      messageDiv.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+
+      hideTypingIndicator();
+      setLoadingState(false);
+    }
+
+    // Global function to update beta value and financial data
+    window.updateBetaValue = function (newBeta) {
+      // First, try to find any input that might contain beta value
+      const possibleBetaInputs = [
+        'input[name="beta"]',
+        "#betaInput",
+        'input[name*="beta" i]',
+        'input[placeholder*="beta" i]',
+        'input[name="beta_unlevered"]',
+        'input[name="beta_levered"]',
+      ];
+
+      let betaInput = null;
+      for (const selector of possibleBetaInputs) {
+        betaInput = document.querySelector(selector);
+        if (betaInput) break;
+      }
+
+      const form = document.querySelector(".formWACC");
+      const typeIdInput = document.querySelector('input[name="typeId"]');
+      const isCompanyAnalysis = typeIdInput && typeIdInput.checked;
+
+      if (betaInput) {
+        // Direct beta input found
+        betaInput.value = newBeta;
+        betaInput.dispatchEvent(new Event("change", { bubbles: true }));
+        addMessage(`✓ Beta actualizado a ${newBeta} exitosamente.`, "ai");
+      } else if (isCompanyAnalysis) {
+        // For company analysis, beta is typically calculated from other inputs
+        addMessage(
+          `Para análisis de empresa específica, el beta se calcula automáticamente. El valor sugerido ${newBeta} puede usarse como referencia para ajustar otros parámetros.`,
+          "ai"
+        );
+      } else {
+        // For sector analysis, beta is usually predefined
+        addMessage(
+          `Para análisis sectorial, el beta ${newBeta} se aplicará en los cálculos internos. Puedes usar este valor como referencia o contactar soporte para implementación específica.`,
+          "ai"
+        );
+      }
+
+      // Suggest recalculation
+      setTimeout(() => {
+        const submitBtn = form?.querySelector('button[type="submit"]');
+        if (submitBtn) {
+          addMessage(
+            '💡 Recomendación: Haz clic en "CALCULA TU WACC" para ver los resultados con el nuevo beta.',
+            "ai"
+          );
+        }
+      }, 1500);
+    };
+
+    // Function to update financial data from AI recommendations
+    window.updateFinancialData = function (financialData) {
+      console.log("=== DEBUGGING updateFinancialData ===");
+      console.log("Financial data received:", financialData);
+
+      // Activate the financial data section if not already active
+      const financialDataToggle = document.getElementById(
+        "financialDataToggle"
+      );
+      const collapseFinancialData = document.getElementById(
+        "collapseFinancialData"
+      );
+      const toggleIcon = document.getElementById("collapseFaToggleFinancial");
+
+      console.log("Form elements found:");
+      console.log("- financialDataToggle:", financialDataToggle);
+      console.log("- collapseFinancialData:", collapseFinancialData);
+      console.log("- toggleIcon:", toggleIcon);
+
+      if (!financialDataToggle.checked) {
+        console.log("Activating financial data section...");
+        financialDataToggle.checked = true;
+        collapseFinancialData.classList.add("show");
+        toggleIcon.classList.remove("fa-toggle-off");
+        toggleIcon.classList.add("fa-toggle-on");
+      } else {
+        console.log("Financial data section already active");
+      }
+
+      // Update D/C ratio
+      if (financialData.dc_ratio !== undefined) {
+        const dcRatioInput = document.getElementById("dcRatioFormInput");
+        console.log("Updating D/C ratio - Input found:", dcRatioInput);
+        if (dcRatioInput) {
+          const newValue = financialData.dc_ratio.toFixed(4);
+          console.log("Setting D/C ratio value:", newValue);
+          dcRatioInput.value = newValue;
+          dcRatioInput.dispatchEvent(new Event("change", { bubbles: true }));
+          console.log("D/C ratio updated. Current value:", dcRatioInput.value);
+        }
+      }
+
+      // Update effective tax rate (convert from decimal to percentage)
+      if (financialData.effective_tax_rate !== undefined) {
+        const taxRateInput = document.getElementById(
+          "effectiveTaxRateFormInput"
+        );
+        console.log("Updating tax rate - Input found:", taxRateInput);
+        if (taxRateInput) {
+          const newValue = (financialData.effective_tax_rate * 100).toFixed(2);
+          console.log("Setting tax rate value:", newValue);
+          taxRateInput.value = newValue;
+          taxRateInput.dispatchEvent(new Event("change", { bubbles: true }));
+          console.log("Tax rate updated. Current value:", taxRateInput.value);
+        }
+      }
+
+      // Update beta levered
+      if (financialData.beta_levered !== undefined) {
+        const betaLeveredInput = document.getElementById(
+          "betaLeveredFormInput"
+        );
+        console.log("Updating beta levered - Input found:", betaLeveredInput);
+        if (betaLeveredInput) {
+          const newValue = financialData.beta_levered.toFixed(4);
+          console.log("Setting beta levered value:", newValue);
+          betaLeveredInput.value = newValue;
+          betaLeveredInput.dispatchEvent(
+            new Event("change", { bubbles: true })
+          );
+          console.log(
+            "Beta levered updated. Current value:",
+            betaLeveredInput.value
+          );
+        }
+      }
+
+      // Update beta unlevered
+      if (financialData.beta_unlevered !== undefined) {
+        const betaUnleveredInput = document.getElementById(
+          "betaUnleveredFormInput"
+        );
+        console.log(
+          "Updating beta unlevered - Input found:",
+          betaUnleveredInput
+        );
+        if (betaUnleveredInput) {
+          const newValue = financialData.beta_unlevered.toFixed(4);
+          console.log("Setting beta unlevered value:", newValue);
+          betaUnleveredInput.value = newValue;
+          betaUnleveredInput.dispatchEvent(
+            new Event("change", { bubbles: true })
+          );
+          console.log(
+            "Beta unlevered updated. Current value:",
+            betaUnleveredInput.value
+          );
+        }
+      }
+
+      console.log("=== END updateFinancialData ===");
+
+      // Show success message
+      addMessage(
+        `✅ Datos financieros actualizados automáticamente:
+• D/C Ratio: ${(financialData.dc_ratio * 100).toFixed(1)}%
+• Tasa Impositiva: ${(financialData.effective_tax_rate * 100).toFixed(1)}%
+• Beta Apalancado: ${financialData.beta_levered?.toFixed(4) || "N/A"}
+• Beta Desapalancado: ${financialData.beta_unlevered?.toFixed(4) || "N/A"}`,
+        "ai"
+      );
+
+      // Scroll to the financial data section
+      setTimeout(() => {
+        collapseFinancialData.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 500);
+    };
+
     function handleAPIError(errorMessage) {
       hideTypingIndicator();
       setLoadingState(false);
 
-      // Fallback responses when API fails
       const fallbackResponses = [
-        "Disculpa, estoy experimentando problemas técnicos en este momento. ¿Podrías intentar más tarde?",
-        "Lo siento, no puedo procesar tu consulta ahora. Te recomiendo revisar la documentación de la plataforma o contactar a soporte.",
-        "Temporalmente no puedo ayudarte con consultas específicas. ¿Te gustaría que te guíe a la sección de ayuda?",
+        "Disculpa, tengo problemas técnicos. Mientras tanto, puedes usar betas de referencia: Tecnología (1.2-1.5), Servicios Financieros (1.1-1.3), Retail (0.9-1.2), Utilities (0.6-0.8).",
+        "No puedo acceder a la base de datos ahora. Para tu sector, considera betas entre 0.8-1.5 según la industria. ¿Necesitas ayuda con algún cálculo específico?",
       ];
 
-      const fallbackResponse =
+      const response =
         fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
-      addMessage(fallbackResponse, "ai");
-
-      // Log error for debugging (only in development)
-      if (
-        window.location.hostname === "localhost" ||
-        window.location.hostname === "127.0.0.1"
-      ) {
-        addMessage(`Debug: ${errorMessage}`, "ai");
-      }
+      addMessage(response, "ai");
     }
 
     // Close chatbot when clicking outside

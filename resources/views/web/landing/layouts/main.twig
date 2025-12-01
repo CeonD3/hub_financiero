@@ -23,6 +23,35 @@
 				/*background-image: linear-gradient( 95.2deg, rgba(173,252,234,1) 26.8%, rgba(192,229,246,1) 64% );*/
 				/*background-image:linear-gradient( 95.2deg, rgba(217,252,234,1) 35.8%, rgba(194,229,246,1) 90% );*/
 			}
+
+			/* Scroll margin para las secciones */
+			#plataformas,
+			#beneficios,
+			#productos,
+			#equipo,
+			#contactanos {
+				scroll-margin-top: 110px;
+			}
+
+			/* Hover effect para los enlaces del menú */
+			#kt_landing_menu a:hover {
+				color: #009ef7 !important;
+			}
+
+			/* Smooth scroll para toda la página */
+			html {
+				scroll-behavior: smooth;
+			}
+
+			#kt_landing_menu a.active {
+				color: #009ef7 !important;
+			}
+
+			/* Asegurar que todos los enlaces del menú mantengan consistencia visual */
+			#kt_landing_menu a {
+				transition: color 0.15s ease;
+			}
+
 		</style>
 		<script>
 			window.AppFinanceWeb = {
@@ -89,6 +118,30 @@ document.documentElement.setAttribute("data-theme", themeMode);
 			var hostUrl = "assets/";
 		</script>
 		<script src="/assets/web/js/bundle.min.js"></script>
+
+		<script>
+			// Smooth scroll mejorado para los enlaces del menú
+			document.addEventListener('DOMContentLoaded', function() {
+				// Seleccionar todos los enlaces con clase smooth-scroll
+				const smoothScrollLinks = document.querySelectorAll('a.smooth-scroll[href^="#"]');
+				
+				smoothScrollLinks.forEach(link => {
+					link.addEventListener('click', function(e) {
+						e.preventDefault();
+						
+						const targetId = this.getAttribute('href').substring(1);
+						const targetElement = document.getElementById(targetId);
+						
+						if (targetElement) {
+							targetElement.scrollIntoView({
+								behavior: 'smooth',
+								block: 'start'
+							});
+						}
+					});
+				});
+			});
+		</script>
 
 		<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
 		<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>

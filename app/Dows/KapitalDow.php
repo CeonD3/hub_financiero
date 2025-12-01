@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Dows;
 
@@ -9,31 +9,89 @@ use App\Services\FinanceService;
 use App\Services\MargaritaService;
 use Firebase\JWT\JWT;
 
-class KapitalDow {
-    
-    public function form($request) {
+class KapitalDow
+{
+
+    public function form($request)
+    {
         $input  = $request->getParsedBody();
         $input['uid'] = $request->getAttribute('uid') ?? '';
         $input['userId'] = FG::userId();
-        $financeService = new FinanceService();
-        return $financeService->request('POST', '/kapital/form', $input);
-	}
 
-    public function result($request) {
+        // Validar y procesar campos financieros optimizados
+        if (isset($input['useFinancialData']) && $input['useFinancialData'] == '1') {
+            // D/C Ratio (C19) - convertir a decimal si viene como porcentaje
+            if (isset($input['dc_ratio']) && !empty($input['dc_ratio'])) {
+                $input['dc_ratio'] = floatval($input['dc_ratio']);
+            }
+
+            // Tasa Efectiva de Impuesto (C20) - convertir porcentaje a decimal
+            if (isset($input['effective_tax_rate']) && !empty($input['effective_tax_rate'])) {
+                $input['effective_tax_rate'] = floatval($input['effective_tax_rate']) / 100;
+            }
+
+            // Beta Apalancado (C21)
+            if (isset($input['beta_levered']) && !empty($input['beta_levered'])) {
+                $input['beta_levered'] = floatval($input['beta_levered']);
+            }
+
+            // Beta Desapalancado - opcional para cálculos adicionales
+            if (isset($input['beta_unlevered']) && !empty($input['beta_unlevered'])) {
+                $input['beta_unlevered'] = floatval($input['beta_unlevered']);
+            }
+        }
+
+        $financeService = new FinanceService();
+        $result = $financeService->request('POST', '/kapital/form', $input);
+
+        // Si es un proyecto existente (tiene uid), procesar los datos financieros del backend
+        if (!empty($input['uid']) && isset($result['data']['form'])) {
+            $formData = $result['data']['form'];
+
+            // Procesar campos financieros optimizados desde el backend
+            if (isset($formData['dc_ratio_optimized'])) {
+                $result['data']['form']['dc_ratio'] = $formData['dc_ratio_optimized'];
+                $result['data']['form']['useFinancialData'] = '1';
+            }
+
+            if (isset($formData['effective_tax_rate_optimized'])) {
+                // Convertir de decimal a porcentaje para mostrar en el formulario
+                $result['data']['form']['effective_tax_rate'] = $formData['effective_tax_rate_optimized'] * 100;
+                $result['data']['form']['useFinancialData'] = '1';
+            }
+
+            if (isset($formData['beta_levered_optimized'])) {
+                $result['data']['form']['beta_levered'] = $formData['beta_levered_optimized'];
+                $result['data']['form']['useFinancialData'] = '1';
+            }
+
+            if (isset($formData['beta_unlevered_optimized'])) {
+                $result['data']['form']['beta_unlevered'] = $formData['beta_unlevered_optimized'];
+                $result['data']['form']['useFinancialData'] = '1';
+            }
+        }
+
+        return $result;
+    }
+
+    public function result($request)
+    {
         $input = $request->getParsedBody();
         $financeService = new FinanceService();
         return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/result', $input);
-	}
+    }
 
-    public function analysis($request) {
+    public function analysis($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/analysis');
-	}
+    }
 
-    public function methodology($request) {
+    public function methodology($request)
+    {
         $margaritaService = new MargaritaService();
         $slug = 'metodologia-kapital';
-        $result = $margaritaService->request('POST', '/'.$slug);
+        $result = $margaritaService->request('POST', '/' . $slug);
         $categories = [];
         if ($result['success']) {
             $products = [];
@@ -58,10 +116,11 @@ class KapitalDow {
                 }
             }
         }
-        return ['success' => true, 'data' => ['uid'=>$request->getAttribute('uid'), 'categories' => $categories]];
-	}
+        return ['success' => true, 'data' => ['uid' => $request->getAttribute('uid'), 'categories' => $categories]];
+    }
 
-    public function viewReport($request) {
+    public function viewReport($request)
+    {
 
         $id = $request->getAttribute('id');
         $slug = $request->getAttribute('slug');
@@ -75,69 +134,160 @@ class KapitalDow {
             'uid'  => $request->getAttribute('uid'),
             'id' => $request->getAttribute('id')
         );
-        $jwt = JWT::encode($payload, $key);
+        $jwt = JWT::encode($payload, $key, 'HS256');
         $url = $_ENV['API_URL_FINANCE'] . '/report/kapital/' . $jwt;
-        
+
         return ['success' => true, 'data' => ['url' => $url, 'uid' => $request->getAttribute('uid')]];
-	}
+    }
 
-    public function generateReport($request) {
+    public function generateReport($request)
+    {
         $input = $request->getParsedBody();
         $financeService = new FinanceService();
-        return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/reports/generate' , $input);
-	}
+        return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/reports/generate', $input);
+    }
 
-    public function listReport($request) {
+    public function listReport($request)
+    {
         $input = $request->getParsedBody();
         $financeService = new FinanceService();
-        return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/reports/list' , $input);
-	}
+        return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/reports/list', $input);
+    }
 
-    public function showReport($request) {
+    public function showReport($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/reports/' . $request->getAttribute('id') . '/show');
-	}
+    }
 
-    public function detailResult($request) {
+    public function detailResult($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/result/detail');
-	}
-    
-    public function store($request) {
+    }
+
+    public function store($request)
+    {
         $input = $request->getParsedBody();
         $input['userId'] = FG::userId();
+
+        // Procesar campos financieros optimizados
+        if (isset($input['useFinancialData']) && $input['useFinancialData'] == '1') {
+            // D/C Ratio (Excel C19) - mantener como decimal
+            if (isset($input['dc_ratio']) && !empty($input['dc_ratio'])) {
+                $input['dc_ratio_optimized'] = floatval($input['dc_ratio']);
+            }
+
+            // Tasa Efectiva de Impuesto (Excel C20) - convertir % a decimal
+            if (isset($input['effective_tax_rate']) && !empty($input['effective_tax_rate'])) {
+                $input['effective_tax_rate_optimized'] = floatval($input['effective_tax_rate']) / 100;
+            }
+
+            // Beta Apalancado (Excel C21)
+            if (isset($input['beta_levered']) && !empty($input['beta_levered'])) {
+                $input['beta_levered_optimized'] = floatval($input['beta_levered']);
+            }
+
+            // Beta Desapalancado - para cálculos internos
+            if (isset($input['beta_unlevered']) && !empty($input['beta_unlevered'])) {
+                $input['beta_unlevered_optimized'] = floatval($input['beta_unlevered']);
+            }
+        }
+
         $financeService = new FinanceService();
         // echo json_encode($input); exit;
         return $financeService->request('POST', '/kapital/store', $input);
-	}
+    }
 
-    public function update($request) {
+    public function update($request)
+    {
         $input = $request->getParsedBody();
+
+        // Procesar campos financieros optimizados para actualización
+        if (isset($input['useFinancialData']) && $input['useFinancialData'] == '1') {
+            // D/C Ratio (Excel C19) - mantener como decimal
+            if (isset($input['dc_ratio']) && !empty($input['dc_ratio'])) {
+                $input['dc_ratio_optimized'] = floatval($input['dc_ratio']);
+            }
+
+            // Tasa Efectiva de Impuesto (Excel C20) - convertir % a decimal
+            if (isset($input['effective_tax_rate']) && !empty($input['effective_tax_rate'])) {
+                $input['effective_tax_rate_optimized'] = floatval($input['effective_tax_rate']) / 100;
+            }
+
+            // Beta Apalancado (Excel C21)
+            if (isset($input['beta_levered']) && !empty($input['beta_levered'])) {
+                $input['beta_levered_optimized'] = floatval($input['beta_levered']);
+            }
+
+            // Beta Desapalancado - para cálculos internos
+            if (isset($input['beta_unlevered']) && !empty($input['beta_unlevered'])) {
+                $input['beta_unlevered_optimized'] = floatval($input['beta_unlevered']);
+            }
+        }
+
         $financeService = new FinanceService();
         // echo json_encode($input); exit;
         return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/update', $input);
-	}
+    }
 
-    public function detailAnalysis($request) {
+    public function detailAnalysis($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/analysis/detail');
-	}
+    }
 
-    public function costAnalysis($request) {
+    public function costAnalysis($request)
+    {
         $input = $request->getParsedBody();
         $financeService = new FinanceService();
-        return $financeService->request('POST', '/kapital/users/' . FG::userId(). '/templates/' . $request->getAttribute('uid') . '/analysis/cost', $input);
-	}
+        return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/analysis/cost', $input);
+    }
 
-    public function taxrate($request) {
+    public function taxrate($request)
+    {
         $input = $request->getParsedBody();
         $input['userId'] = FG::userId();
         $financeService = new FinanceService();
         return $financeService->request('POST', '/kapital/taxrate', $input);
-	}
-    
-    public function projects($request) {
+    }
+
+    public function projects($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/kapital/users/' . FG::userId() . '/projects');
-	}
+    }
+
+    /**
+     * Obtener datos financieros optimizados de un proyecto existente
+     */
+    public function getFinancialData($request)
+    {
+        $financeService = new FinanceService();
+        $result = $financeService->request('POST', '/kapital/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/financial-data');
+
+        // Procesar datos para mostrar en el formulario
+        if ($result['success'] && isset($result['data'])) {
+            $data = $result['data'];
+
+            // Convertir datos del backend al formato del formulario
+            if (isset($data['dc_ratio_optimized'])) {
+                $data['dc_ratio'] = $data['dc_ratio_optimized'];
+            }
+            if (isset($data['effective_tax_rate_optimized'])) {
+                // Convertir de decimal a porcentaje para mostrar
+                $data['effective_tax_rate'] = $data['effective_tax_rate_optimized'] * 100;
+            }
+            if (isset($data['beta_levered_optimized'])) {
+                $data['beta_levered'] = $data['beta_levered_optimized'];
+            }
+            if (isset($data['beta_unlevered_optimized'])) {
+                $data['beta_unlevered'] = $data['beta_unlevered_optimized'];
+            }
+
+            $result['data'] = $data;
+        }
+
+        return $result;
+    }
 }

@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Dows;
 
@@ -9,69 +9,81 @@ use App\Services\FinanceService;
 use App\Services\MargaritaService;
 use Firebase\JWT\JWT;
 
-class ValoraDow {
-    
-    public function form($request) {
+class ValoraDow
+{
+
+    public function form($request)
+    {
         $input  = $request->getParsedBody();
         $input['uid'] = $request->getAttribute('uid') ?? '';
         $input['userId'] = FG::userId();
         $financeService = new FinanceService();
         return $financeService->request('POST', '/valora/form', $input);
-	}
+    }
 
-    public function result($request) {
+    public function result($request)
+    {
         $input = $request->getParsedBody();
         $financeService = new FinanceService();
         return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/result', $input);
-	}
+    }
 
-    public function analysis($request) {
+    public function analysis($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/analysis');
-	}
+    }
 
-    public function detailResult($request) {
+    public function detailResult($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/result/detail');
-	}
-    
-    public function store($request) {
+    }
+
+    public function store($request)
+    {
         $input = $request->getParsedBody();
         $input['userId'] = FG::userId();
         $financeService = new FinanceService();
         // echo json_encode($input); exit;
         return $financeService->request('POST', '/valora/store', $input);
-	}
+    }
 
-    public function bvl($request) {
+    public function bvl($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/valora/bvl', []);
-	}
+    }
 
-    public function balance($request) {
+    public function balance($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/balance', $request->getParsedBody());
-	}
+    }
 
-    public function update($request) {
+    public function update($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/update', $request->getParsedBody());
-	}
+    }
 
-    public function detailAnalysis($request) {
+    public function detailAnalysis($request)
+    {
         $financeService = new FinanceService();
-        return $financeService->request('POST', '/valora/users/' . FG::userId(). '/templates/' . $request->getAttribute('uid') . '/analysis/detail');
-	}
+        return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/analysis/detail');
+    }
 
-    public function costAnalysis($request) {
+    public function costAnalysis($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/analysis/cost', $request->getParsedBody());
-	}
+    }
 
-    public function methodology($request) {
+    public function methodology($request)
+    {
         $margaritaService = new MargaritaService();
         $slug = 'metodologia-valora';
-        $result = $margaritaService->request('POST', '/'.$slug);
+        $result = $margaritaService->request('POST', '/' . $slug);
         $categories = [];
         if ($result['success']) {
             $products = [];
@@ -96,15 +108,17 @@ class ValoraDow {
                 }
             }
         }
-        return ['success' => true, 'data' => ['uid'=>$request->getAttribute('uid'), 'categories' => $categories]];
-	}
+        return ['success' => true, 'data' => ['uid' => $request->getAttribute('uid'), 'categories' => $categories]];
+    }
 
-    public function projects($request) {
+    public function projects($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/valora/users/' . FG::userId() . '/projects');
-	}
+    }
 
-    public function viewReport($request) {
+    public function viewReport($request)
+    {
 
         $id = $request->getAttribute('id');
         $slug = $request->getAttribute('slug');
@@ -118,27 +132,29 @@ class ValoraDow {
             'uid'  => $request->getAttribute('uid'),
             'id' => $request->getAttribute('id')
         );
-        $jwt = JWT::encode($payload, $key);
+        $jwt = JWT::encode($payload, $key, 'HS256');
         $url = $_ENV['API_URL_FINANCE'] . '/report/valora/' . $jwt;
-        
+
         return ['success' => true, 'data' => ['url' => $url, 'uid' => $request->getAttribute('uid')]];
-	}
+    }
 
-    public function generateReport($request) {
+    public function generateReport($request)
+    {
         $input = $request->getParsedBody();
         $financeService = new FinanceService();
-        return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/reports/generate' , $input);
-	}
+        return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/reports/generate', $input);
+    }
 
-    public function listReport($request) {
+    public function listReport($request)
+    {
         $input = $request->getParsedBody();
         $financeService = new FinanceService();
-        return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/reports/list' , $input);
-	}
+        return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/reports/list', $input);
+    }
 
-    public function showReport($request) {
+    public function showReport($request)
+    {
         $financeService = new FinanceService();
         return $financeService->request('POST', '/valora/users/' . FG::userId() . '/templates/' . $request->getAttribute('uid') . '/reports/' . $request->getAttribute('id') . '/show');
-	}
-
+    }
 }
