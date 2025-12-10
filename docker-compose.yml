@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   php:
+    container_name: hub_financiero_php
     build:
       context: .
       dockerfile: Dockerfile
@@ -14,6 +15,11 @@ services:
     volumes:
       - .:/var/www/html
       - /var/www/html/vendor
-      - /var/www/html/node_modules
       - ./config/docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
     restart: unless-stopped
+    networks:
+      - prosupervision_network
+
+networks:
+  prosupervision_network:
+    external: true

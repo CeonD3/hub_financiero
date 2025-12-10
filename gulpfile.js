@@ -173,20 +173,47 @@ gulp.task("scripts-web", () => {
 
 // END WEB
 
-gulp.task("admin", () => {
-  gulp.watch(
+// Reemplaza las tareas admin y web con:
+gulp.task(
+  "build-admin",
+  gulp.series("styles-admin-bundle", "scripts-admin-bundle", "scripts-admin")
+);
+
+gulp.task(
+  "build-web",
+  gulp.series(
+    "styles-layout-bundle",
+    "scripts-layout-bundle",
+    "style-web",
+    "scripts-web"
+  )
+);
+
+// Para desarrollo con watch:
+gulp.task("dev-admin", () => {
+  return gulp.watch(
     "./resources/assets/admin/js/**/*.js",
-    gulp.parallel("scripts-admin")
+    gulp.series("scripts-admin")
   );
-  // gulp.watch('./public/assets-gulp/es6/login/**/*.js',gulp.parallel('babel-login-admin'))
-  // gulp.watch('./public/assets-gulp/scss/admin/**/*.scss',gulp.parallel('style-admin'))
 });
 
-gulp.task("web", () => {
-  gulp.watch("./resources/assets/web/js/**/*.js", gulp.parallel("scripts-web"));
-  // gulp.watch('./public/assets-gulp/es6/login/**/*.js',gulp.parallel('babel-login-admin'))
-  gulp.watch(
-    "./resources/assets/web/scss/**/*.scss",
-    gulp.parallel("style-web")
+gulp.task("dev-web", () => {
+  return gulp.watch(
+    [
+      "./resources/assets/web/js/**/*.js",
+      "./resources/assets/web/scss/**/*.scss",
+    ],
+    gulp.parallel("scripts-web", "style-web")
   );
 });
+
+// Tarea que compila todo y luego hace watch
+gulp.task("dev", gulp.series(
+  // Primero compila todo
+  gulp.parallel("build-admin", "build-web"),
+  // Luego inicia los watchers
+  gulp.parallel("dev-admin", "dev-web")
+));
+
+// También puedes crear una tarea solo para compilar todo sin watch
+gulp.task("build", gulp.parallel("build-admin", "build-web"));

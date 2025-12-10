@@ -7,7 +7,7 @@ $map->attach('kapital.', '/kapital', function ($map) {
         'Action' => 'index'
     ]);
 
-    $map->get('projects', '/proyectos',[
+    $map->get('projects', '/proyectos', [
         'Controller' => 'App\Controllers\KapitalController',
         'Action' => 'projects'
     ]);
@@ -32,9 +32,24 @@ $map->attach('kapital.', '/kapital', function ($map) {
         'Action' => 'detailResult'
     ]);
 
+    $map->post('getFinancialData', '/{uid}/financial-data', [
+        'Controller' => 'App\Controllers\KapitalController',
+        'Action' => 'getFinancialData'
+    ]);
+
+    $map->get('getFormData', '/{uid}/form-data-backend', [
+        'Controller' => 'App\Controllers\KapitalController',
+        'Action' => 'getFormData'
+    ]);
+
     $map->get('results', '/{uid}/resultados', [
         'Controller' => 'App\Controllers\KapitalController',
         'Action' => 'results'
+    ]);
+
+    $map->get('edit', '/{uid}/editar', [
+        'Controller' => 'App\Controllers\KapitalController',
+        'Action' => 'edit'
     ]);
 
     $map->get('analysis', '/{uid}/analisis', [
@@ -78,8 +93,5 @@ $map->attach('kapital.', '/kapital', function ($map) {
             'Controller' => 'App\Controllers\KapitalController',
             'Action' => 'showReport'
         ]);
-
     });
 });
-
-?>

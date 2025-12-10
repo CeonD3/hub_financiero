@@ -44,6 +44,11 @@
             </div>
         </div>
         <div class="m-0" style="display:none;" v-show="!loading">
+            <!-- Form Data (Hidden for data loading) -->
+            <div style="display: none;">
+                {% include "web/home/kapital/layouts/partials/form.twig" %}
+            </div>
+            
             <div class="col-lg-12 mt-3" v-if="typeId == 1">
                 <div class="card bs-panel-3 shadow-sm">
                     <div class="card-body">
@@ -292,4 +297,82 @@
 
 {% block script %}
     <script src="/assets/web/js/resultKapital.js"></script>
+    <script src="/assets/web/js/main.js"></script>
+    <script>
+        // Load form data from backend when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const uid = window.location.pathname.split('/')[2]; // Extrae el UID de la URL /kapital/{uid}/resultados
+            // Call the backend form data endpoint
+            fetch(`/kapital/${uid}/form-data-backend`)
+                .then(response => response.json())
+                .then(resp => {
+                    console.log('Form data from backend:', resp);
+                    if (resp && resp.success && resp.data) {
+                        window.AppFinanceWeb = window.AppFinanceWeb || {};
+                        window.AppFinanceWeb.uid = uid;
+                        window.AppFinanceWeb.formData = resp.data;
+                        // Intentar usar la función centralizada expuesta por main.js
+                        const applier = (window.AppFinanceWeb && window.AppFinanceWeb.applyBackendFormData)
+                            ? window.AppFinanceWeb.applyBackendFormData
+                            : (typeof applyBackendFormData === 'function' ? applyBackendFormData : null);
+                        if (applier) {
+                            try { applier(resp.data); } catch (e) { console.warn('Applier error:', e); }
+                        } else {
+                            // Fallback: rellenar inputs directamente si el applier aún no está disponible
+                            const formData = resp.data;
+                            const directMapping = {
+                                'date': formData.date,
+                                'sector': formData.sector,
+                                'instrument': formData.instrument,
+                                'bono': formData.bono,
+                                'country': formData.country,
+                                'currency': formData.currency,
+                                'devaluation': formData.devaluation,
+                                'tax': formData.tax,
+                                'dc_ratio': formData.dc_ratio,
+                                'effective_tax_rate': formData.effective_tax_rate,
+                                'beta_levered': formData.beta_levered,
+                                'beta_unlevered': formData.beta_unlevered,
+                                'useFinancialData': formData.useFinancialData
+                            };
+                            const specialMapping = {
+                                'debt': formData.epd,
+                                'capital': formData.epc,
+                                'kd': formData.ekd
+                            };
+                            [...Object.keys(directMapping), ...Object.keys(specialMapping)].forEach((key) => {
+                                const value = (key in directMapping) ? directMapping[key] : specialMapping[key];
+                                if (value !== undefined && value !== null && value !== '') {
+                                    const el = document.querySelector(`[name="${key}"]`);
+                                    if (el) {
+                                        if (el.type === 'checkbox') {
+                                            el.checked = value === '1' || value === 1 || value === true;
+                                        } else {
+                                            el.value = value;
+                                        }
+                                        el.dispatchEvent(new Event('change'));
+                                    }
+                                }
+                            });
+                            // Activar sección financiera si corresponde
+                            if (formData.useFinancialData === '1') {
+                                const collapseSection = document.getElementById('collapseFinancialData');
+                                const toggleIcon = document.getElementById('collapseFaToggleFinancial');
+                                const toggleLabel = document.querySelector('label[for="financialDataToggle"]');
+                                if (collapseSection) collapseSection.classList.add('show');
+                                if (toggleIcon) { toggleIcon.classList.remove('fa-toggle-off'); toggleIcon.classList.add('fa-toggle-on'); }
+                                if (toggleLabel) { toggleLabel.classList.remove('collapsed'); toggleLabel.setAttribute('aria-expanded', 'true'); }
+                            }
+                        }
+                        // Debug info
+                        if (typeof updateDebugInfo === 'function') {
+                            updateDebugInfo(resp.data);
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading form data:', error);
+                });
+        });
+    </script>
 {% endblock %}

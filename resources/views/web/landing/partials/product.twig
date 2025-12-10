@@ -1,5 +1,7 @@
 {% set titulo = [] %}
 {% set productos = [] %}
+{% set productosKapital = [] %}
+{% set productosValora = [] %}
 
 {% for item in servicios %}
     {% if item.content_alias == 'tituloinf' %}
@@ -7,45 +9,14 @@
     {% endif %}
     {% if item.content_alias == 'servicios' %}
         {% set productos = productos|merge([item]) %}
+        {# Filtrar por content_boolean: 1=Kapital, 0=Valora #}
+        {% if item.content_boolean == 1 or item.content_boolean == '1' %}
+            {% set productosKapital = productosKapital|merge([item]) %}
+        {% else %}
+            {% set productosValora = productosValora|merge([item]) %}
+        {% endif %}
     {% endif %}
 {% endfor %}
-
-{# Configuración de productos #}
-{% set product_config = [
-    {
-        'index': 0,
-        'icon': 'fa-solid fa-laptop',
-        'name': productos[0].content_name ?? 'Reporte Básico',
-        'description': productos[0].content_caption ?? 'Descripción del reporte básico',
-        'modal_description': productos[0].content_description ?? '',
-        'button_text': 'Adquirir reporte',
-        'price': 'Gratis',
-        'ribbon': '',
-        'modal_icon': 'fa-regular fa-envelope'
-    },
-    {
-        'index': 1,
-        'icon': 'fa-solid fa-laptop',
-        'name': productos[1].content_name ?? 'Reporte Detallado',
-        'description': 'Contiene los resultados del reporte de datos con la metodología. Asi mismo, se incluye 1 hora adicional de consultoría.',
-        'modal_description': productos[1].content_description ?? '',
-        'button_text': 'Adquirir reporte',
-        'price': 'S/ 299.00',
-        'ribbon': null,
-        'modal_icon': 'fa-solid fa-bolt'
-    },
-    {
-        'index': 2,
-        'icon': 'fa-solid fa-laptop',
-        'name': productos[2].content_name ?? 'Consultoría Especializada',
-        'description': 'Continue los resultados de la estimación del costo de capital de la empresa más el del sector y del mercado desarrollado',
-        'modal_description': productos[2].content_description ?? '',
-        'button_text': 'Adquirir consultoría',
-        'price': 'S/ 150.00 / hora',
-        'ribbon': null,
-        'modal_icon': 'fa-sharp fa-solid fa-chart-simple'
-    }
-] %}
 
 <!--begin::Team Section-->
 <div class="bs-landing-section bs-section-1" id="productos">
@@ -56,97 +27,284 @@
             <!--begin::Title-->
             <div class="bs-section-title">{{titulo[0].content_name}}</div>
             <!--end::Title-->
-            <!--begin::Sub-title-->
-            <div class="bs-section-text">{{titulo[0].content_caption}}</div>
-            <!--end::Sub-title=-->
+
+            <!--begin::Tabs (Kapital / Valora) -->
+            <style>
+                /* Estilos personalizados para tabs sin línea, con shadow y selección azul */
+                .bs-report-tabs { border-bottom: none !important; }
+                .bs-report-tabs .nav-link {
+                    padding: 0.75rem 1.5rem;
+                    font-size: 1.1rem;
+                    border-radius: 0.5rem;
+                    border: none;
+                    background-color: #ffffff;
+                    color: #5E6278;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+                    margin-right: 0.75rem;
+                    font-weight: 600;
+                    transition: all 0.3s ease;
+                }
+                .bs-report-tabs .nav-link:hover {
+                    color: var(--bs-primary);
+                    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+                }
+                .bs-report-tabs .nav-link.active {
+                    background-color: var(--bs-primary);
+                    color: #ffffff;
+                    box-shadow: 0 6px 14px rgba(var(--bs-primary-rgb), 0.25);
+                }
+                
+                /* Estilos para cards con altura uniforme y botones siempre abajo */
+                .bs-card-2 {
+                    display: flex !important;
+                    flex-direction: column !important;
+                    height: 100% !important;
+                    min-height: 500px;
+                }
+                .bs-card-2 .card-body {
+                    flex: 1 1 auto !important;
+                    display: flex !important;
+                    flex-direction: column !important;
+                }
+                .bs-card-2 .card-footer {
+                    flex-shrink: 0 !important;
+                    margin-top: auto !important;
+                }
+            </style>
+            <div class="mt-4">
+                <ul class="nav bs-report-tabs" id="reportTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="kapital-tab" data-bs-toggle="tab" href="#kapital-pane" role="tab" aria-controls="kapital-pane" aria-selected="true">Kapital</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="valora-tab" data-bs-toggle="tab" href="#valora-pane" role="tab" aria-controls="valora-pane" aria-selected="false">Valora</a>
+                    </li>
+                </ul>
+            </div>
+            <!--end::Tabs -->
+
         </div>
         <!--end::Heading-->
-        <!--begin::Slider-->
-        <div class="tns tns-default" style="direction: ltr">
-            <!--begin::Wrapper-->
-            <div data-tns="true" data-tns-loop="true" data-tns-swipe-angle="false" data-tns-speed="2000" data-tns-autoplay="true" data-tns-autoplay-timeout="18000" data-tns-controls="true" data-tns-nav="false" data-tns-items="1" data-tns-center="false" data-tns-dots="false" data-tns-prev-button="#kt_team_slider_prev" data-tns-next-button="#kt_team_slider_next" data-tns-responsive="{1200: {items: 3}, 992: {items: 2}}">
-                
-                {% for product in product_config %}
-                <div class="card bs-card-2">
-                    <div class="card-body">
-                        {% if product.ribbon %}
-                            <div class="bs-card-ribbon">{{ product.ribbon }}</div>
-                        {% endif %}
-                        <div class="bs-card-image">
-                            <i class="{{ product.icon }}"></i>
-                        </div>
-                        <div class="bs-card-title">{{ product.name }}</div>
-                        <div class="bs-card-text">
-                            {{ product.description }}
-                        </div>
-                    </div>
-                    <div class="card-footer border-0">
-                        <div class="d-flex flex-column gap-2">
-                            <button type="button" class="btn btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_product_modal_{{ product.index + 1 }}">
-                                {{ product.button_text }} <i class="fa-solid fa-chevron-right ms-2"></i>
-                            </button>
-                            <div class="text-center">
-                                <span class="fs-4 fw-bold text-primary">{{ product.price }}</span>
+        
+        <!--begin::Tab Content-->
+        <div class="tab-content mt-5" id="reportTabsContent">
+            
+            <!--begin::Kapital Tab Pane-->
+            <div class="tab-pane fade show active" id="kapital-pane" role="tabpanel" aria-labelledby="kapital-tab">
+                <!--begin::Slider-->
+                <div class="tns tns-default" style="direction: ltr">
+                    <!--begin::Wrapper-->
+                    <div data-tns="true" data-tns-loop="true" data-tns-swipe-angle="false" data-tns-speed="2000" data-tns-autoplay="true" data-tns-autoplay-timeout="18000" data-tns-controls="true" data-tns-nav="false" data-tns-items="1" data-tns-center="false" data-tns-dots="false" data-tns-prev-button="#kt_kapital_slider_prev" data-tns-next-button="#kt_kapital_slider_next" data-tns-responsive="{1200: {items: 3}, 992: {items: 2}}">
+                        
+                        {% for product in productosKapital %}
+                        <div class="card bs-card-2">
+                            <div class="card-body">
+                                {% if product.content_ribbon %}
+                                    <div class="bs-card-ribbon">{{ product.content_ribbon }}</div>
+                                {% endif %}
+                                <div class="bs-card-image">
+                                    {% if product.imagens %}
+                                        <img src="{{_company.host}}{{ product.imagens|raw[0].patch }}" alt="{{ product.content_name }}" style="max-width: 100%; height: auto; border-radius: 0.5rem;">
+                                    {% else %}
+                                        <i class="fa-solid fa-laptop"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="bs-card-title">{{ product.content_name }}</div>
+                                <div class="bs-card-text">
+                                    {{ product.content_caption }}
+                                </div>
+                            </div>
+                            <div class="card-footer border-0">
+                                <div class="d-flex flex-column gap-2">
+                                    {% if product.content_url %}
+                                        <a href="{{ product.content_url }}" class="btn btn-light-primary" target="_blank">
+                                            Adquirir {{ product.content_type_name }} <i class="fa-solid fa-chevron-right ms-2"></i>
+                                        </a>
+                                    {% else %}
+                                        <button type="button" class="btn btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_product_modal_kapital_{{ loop.index }}">
+                                            Adquirir {{ product.content_type_name }} <i class="fa-solid fa-chevron-right ms-2"></i>
+                                        </button>
+                                    {% endif %}
+                                    <div class="text-center">
+                                        <span class="fs-4 fw-bold text-primary">
+                                            {% if product.content_price == 0 or product.content_price == '0' %}
+                                                Gratis
+                                            {% else %}
+                                                S/ {{ product.content_price }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                {% endfor %}
+                        {% endfor %}
 
+                    </div>
+                    <!--end::Wrapper-->
+                    <!--begin::Button-->
+                    <button class="btn btn-icon btn-active-color-primary" id="kt_kapital_slider_prev">
+                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr074.svg-->
+                        <span class="svg-icon svg-icon-3x">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11.2657 11.4343L15.45 7.25C15.8642 6.83579 15.8642 6.16421 15.45 5.75C15.0358 5.33579 14.3642 5.33579 13.95 5.75L8.40712 11.2929C8.01659 11.6834 8.01659 12.3166 8.40712 12.7071L13.95 18.25C14.3642 18.6642 15.0358 18.6642 15.45 18.25C15.8642 17.8358 15.8642 17.1642 15.45 16.75L11.2657 12.5657C10.9533 12.2533 10.9533 11.7467 11.2657 11.4343Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button class="btn btn-icon btn-active-color-primary" id="kt_kapital_slider_next">
+                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr071.svg-->
+                        <span class="svg-icon svg-icon-3x">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Slider-->
             </div>
-            <!--end::Wrapper-->
-            <!--begin::Button-->
-            <button class="btn btn-icon btn-active-color-primary" id="kt_team_slider_prev">
-                <!--begin::Svg Icon | path: icons/duotune/arrows/arr074.svg-->
-                <span class="svg-icon svg-icon-3x">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M11.2657 11.4343L15.45 7.25C15.8642 6.83579 15.8642 6.16421 15.45 5.75C15.0358 5.33579 14.3642 5.33579 13.95 5.75L8.40712 11.2929C8.01659 11.6834 8.01659 12.3166 8.40712 12.7071L13.95 18.25C14.3642 18.6642 15.0358 18.6642 15.45 18.25C15.8642 17.8358 15.8642 17.1642 15.45 16.75L11.2657 12.5657C10.9533 12.2533 10.9533 11.7467 11.2657 11.4343Z" fill="currentColor" />
-                    </svg>
-                </span>
-                <!--end::Svg Icon-->
-            </button>
-            <!--end::Button-->
-            <!--begin::Button-->
-            <button class="btn btn-icon btn-active-color-primary" id="kt_team_slider_next">
-                <!--begin::Svg Icon | path: icons/duotune/arrows/arr071.svg-->
-                <span class="svg-icon svg-icon-3x">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor" />
-                    </svg>
-                </span>
-                <!--end::Svg Icon-->
-            </button>
-            <!--end::Button-->
+            <!--end::Kapital Tab Pane-->
+            
+            <!--begin::Valora Tab Pane-->
+            <div class="tab-pane fade" id="valora-pane" role="tabpanel" aria-labelledby="valora-tab">
+                <!--begin::Slider-->
+                <div class="tns tns-default" style="direction: ltr">
+                    <!--begin::Wrapper-->
+                    <div data-tns="true" data-tns-loop="true" data-tns-swipe-angle="false" data-tns-speed="2000" data-tns-autoplay="true" data-tns-autoplay-timeout="18000" data-tns-controls="true" data-tns-nav="false" data-tns-items="1" data-tns-center="false" data-tns-dots="false" data-tns-prev-button="#kt_valora_slider_prev" data-tns-next-button="#kt_valora_slider_next" data-tns-responsive="{1200: {items: 3}, 992: {items: 2}}">
+                        
+                        {% for product in productosValora %}
+                        <div class="card bs-card-2">
+                            <div class="card-body">
+                                {% if product.content_ribbon %}
+                                    <div class="bs-card-ribbon">{{ product.content_ribbon }}</div>
+                                {% endif %}
+                                <div class="bs-card-image">
+                                    {% if product.imagens %}
+                                        <img src="{{_company.host}}{{ product.imagens|raw[0].patch }}" alt="{{ product.content_name }}" style="max-width: 100%; height: auto; border-radius: 0.5rem;">
+                                    {% else %}
+                                        <i class="fa-solid fa-laptop"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="bs-card-title">{{ product.content_name }}</div>
+                                <div class="bs-card-text">
+                                    {{ product.content_caption }}
+                                </div>
+                            </div>
+                            <div class="card-footer border-0">
+                                <div class="d-flex flex-column gap-2">
+                                    {% if product.content_url %}
+                                        <a href="{{ product.content_url }}" class="btn btn-light-primary" target="_blank">
+                                            Adquirir {{ product.content_type_name }} <i class="fa-solid fa-chevron-right ms-2"></i>
+                                        </a>
+                                    {% else %}
+                                        <button type="button" class="btn btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_product_modal_valora_{{ loop.index }}">
+                                            Adquirir {{ product.content_type_name }} <i class="fa-solid fa-chevron-right ms-2"></i>
+                                        </button>
+                                    {% endif %}
+                                    <div class="text-center">
+                                        <span class="fs-4 fw-bold text-primary">
+                                            {% if product.content_price == 0 or product.content_price == '0' %}
+                                                Gratis
+                                            {% else %}
+                                                S/ {{ product.content_price }}
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                    <!--end::Wrapper-->
+                    <!--begin::Button-->
+                    <button class="btn btn-icon btn-active-color-primary" id="kt_valora_slider_prev">
+                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr074.svg-->
+                        <span class="svg-icon svg-icon-3x">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M11.2657 11.4343L15.45 7.25C15.8642 6.83579 15.8642 6.16421 15.45 5.75C15.0358 5.33579 14.3642 5.33579 13.95 5.75L8.40712 11.2929C8.01659 11.6834 8.01659 12.3166 8.40712 12.7071L13.95 18.25C14.3642 18.6642 15.0358 18.6642 15.45 18.25C15.8642 17.8358 15.8642 17.1642 15.45 16.75L11.2657 12.5657C10.9533 12.2533 10.9533 11.7467 11.2657 11.4343Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </button>
+                    <!--end::Button-->
+                    <!--begin::Button-->
+                    <button class="btn btn-icon btn-active-color-primary" id="kt_valora_slider_next">
+                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr071.svg-->
+                        <span class="svg-icon svg-icon-3x">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z" fill="currentColor" />
+                            </svg>
+                        </span>
+                        <!--end::Svg Icon-->
+                    </button>
+                    <!--end::Button-->
+                </div>
+                <!--end::Slider-->
+            </div>
+            <!--end::Valora Tab Pane-->
+            
         </div>
-        <!--end::Slider-->
+        <!--end::Tab Content-->
         <div class="col-lg-12 text-center pt-10">
-            <a href="#kt_body" type="button" class="btn btn-primary px-20">Empezar <i class="fa-solid fa-arrow-right ms-2"></i></a>
+            <a href="#kt_body" type="button" class="btn btn-primary px-20">Ver más <i class="fa-solid fa-arrow-right ms-2"></i></a>
         </div>
     </div>
     <!--end::Container-->
 </div>
 <!--end::Team Section-->
 
-{# Modales generados dinámicamente #}
-{% for product in product_config %}
-<div class="modal fade" tabindex="-1" id="kt_product_modal_{{ product.index + 1 }}">
+{# Modales generados dinámicamente para Kapital #}
+{% for product in productosKapital %}
+<div class="modal fade" tabindex="-1" id="kt_product_modal_kapital_{{ loop.index }}">
     <div class="modal-dialog modal-md">
         <div class="modal-content bs-modal-1">
             <div class="modal-header">
-                <h3 class="modal-title">{{ product.name }}</h3>
+                <h3 class="modal-title">{{ product.content_name }}</h3>
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-active-light-info ms-2" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="{{ product.modal_icon }} text-info fs-3"></i>
+                    <i class="{{ product.content_modal_icon ?? 'fa-regular fa-envelope' }} text-info fs-3"></i>
                 </div>
                 <!--end::Close-->
             </div>
             <div class="modal-body">
-                <p class="bs-modal-text">{{ product.modal_description|raw }}</p>
-                {% if product.index == 0 %}
-                    <p><span class="badge badge-light-info fs-4">Free</span></p>
+                <p class="bs-modal-text">{{ product.content_description|raw }}</p>
+                {% if product.content_price == 0 or product.content_price == '0' %}
+                    <p><span class="badge badge-light-info fs-4">Gratis</span></p>
                 {% else %}
                     <div class="text-center mt-3">
-                        <span class="fs-3 fw-bold text-primary">{{ product.price }}</span>
+                        <span class="fs-3 fw-bold text-primary">S/ {{ product.content_price }}</span>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{# Modales generados dinámicamente para Valora #}
+{% for product in productosValora %}
+<div class="modal fade" tabindex="-1" id="kt_product_modal_valora_{{ loop.index }}">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content bs-modal-1">
+            <div class="modal-header">
+                <h3 class="modal-title">{{ product.content_name }}</h3>
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-active-light-info ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="{{ product.content_modal_icon ?? 'fa-regular fa-envelope' }} text-info fs-3"></i>
+                </div>
+                <!--end::Close-->
+            </div>
+            <div class="modal-body">
+                <p class="bs-modal-text">{{ product.content_description|raw }}</p>
+                {% if product.content_price == 0 or product.content_price == '0' %}
+                    <p><span class="badge badge-light-info fs-4">Gratis</span></p>
+                {% else %}
+                    <div class="text-center mt-3">
+                        <span class="fs-3 fw-bold text-primary">S/ {{ product.content_price }}</span>
                     </div>
                 {% endif %}
             </div>

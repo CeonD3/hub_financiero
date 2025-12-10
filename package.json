@@ -152,8 +152,12 @@
     "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "build": "babel src -d output --watch",
-        "admin": "gulp admin"
+        "build": "gulp build",
+        "dev": "gulp dev",
+        "admin": "gulp build-admin",
+        "web": "gulp build-web",
+        "watch-admin": "gulp dev-admin",
+        "watch-web": "gulp dev-web"
     },
     "author": "",
     "license": "ISC"

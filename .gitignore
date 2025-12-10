@@ -6,3 +6,22 @@ node_modules
 package-lock.json
 logs/*
 public/assets/files/stacks/*
+
+# Python Virtual Environment
+venv/
+*.pyc
+__pycache__/
+.pytest_cache/
+
+# Archivos temporales de prueba
+test_request.json
+
+# IDE adicionales
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
