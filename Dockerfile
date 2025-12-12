@@ -1,28 +1,33 @@
-FROM php:8.3.14-apache
+# PHP 8.3 CLI ligero
+FROM php:8.3-cli-alpine
 
 WORKDIR /var/www/html
 
-RUN apt-get update
+# Instala dependencias necesarias
+RUN apk add --no-cache \
+    bash \
+    git \
+    zip \
+    libzip-dev \
+    libpng-dev \
+    oniguruma-dev \
+    curl
 
-RUN apt-get install -y libzip-dev libpng-dev zip git
+# Extensiones PHP
+RUN docker-php-ext-install pdo pdo_mysql zip gd
 
-RUN docker-php-ext-install -j$(nproc) pdo pdo_mysql gd zip
-
-RUN docker-php-ext-enable pdo pdo_mysql gd zip
-
+# Instala Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-COPY . ./
+# Copia el proyecto
+COPY . .
 
-RUN composer update
+RUN echo "upload_max_filesize=512M" > /usr/local/etc/php/conf.d/custom.ini \
+ && echo "post_max_size=512M" >> /usr/local/etc/php/conf.d/custom.ini \
+ && echo "memory_limit=1024M" >> /usr/local/etc/php/conf.d/custom.ini
 
-COPY ./config/docker/apache/000-default.conf /etc/apache2/sites-available/000-default.conf
+# Exponer el puerto interno del contenedor
+EXPOSE 80
 
-RUN a2enmod rewrite
-
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-
-RUN echo "upload_max_filesize=512M\npost_max_size=512M\nmemory_limit=1024M" \
-    > /usr/local/etc/php/conf.d/custom.ini
-
-RUN rm -rf /tmp/*
+# Comando por defecto: servidor interno de PHP en el contenedor
+CMD ["php", "-S", "0.0.0.0:80", "-t", "public"]
